@@ -1,0 +1,95 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2 class="mb-3">Step {{ step.order }}: {{ step.get_step_key_display }}</h2>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+        {% if step.question %}
+        <h5 class="card-title">{{ step.question }}</h5>
+      {% endif %}
+      
+      {% if step.instructions %}
+        <div class="mb-2 text-muted">{{ step.instructions|linebreaks }}</div>
+      {% endif %}
+      
+
+      {% if step.external_link %}
+        <p><a href="{{ step.external_link }}" class="btn btn-sm btn-outline-info" target="_blank">Open Resource</a></p>
+      {% endif %}
+      {% if step.attached_file %}
+        <p><a href="{{ step.attached_file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">Download File</a></p>
+      {% endif %}
+    </div>
+  </div>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {# Short Answer #}
+    {% if step.step_type == "short_answer" %}
+      <div class="mb-3">
+        <label class="form-label">Your Answer</label>
+        <input type="text" name="response" class="form-control" value="{{ response.response|default:'' }}">
+      </div>
+
+    {# Long Answer #}
+    {% elif step.step_type == "long_answer" %}
+      <div class="mb-3">
+        <label class="form-label">Your Answer</label>
+        <textarea name="response" class="form-control" rows="5">{{ response.response|default:'' }}</textarea>
+      </div>
+
+    {# Fill in the Blank #}
+    {% elif step.step_type == "fill_blank" %}
+      <div class="mb-3">
+        <label class="form-label">Fill in the Blank</label>
+        <input type="text" name="response" class="form-control" value="{{ response.response|default:'' }}">
+      </div>
+
+    {# Multiple Choice #}
+    {% elif step.step_type == "multiple_choice" %}
+      {% with correct_options=step.options.all|dictsort:"is_correct" %}
+        <div class="mb-3">
+          <label class="form-label">
+            {% if step.options.all|length > 1 and step.options.all|yesno:"1,2" %}
+              Select all that apply
+            {% else %}
+              Choose one answer
+            {% endif %}
+          </label>
+          {% for option in step.options.all %}
+            <div class="form-check">
+              {% if step.options.all|dictsort:"is_correct"|length > 1 %}
+                <input class="form-check-input" type="checkbox" name="response" value="{{ option.text }}"
+                       id="option{{ forloop.counter }}"
+                       {% if option.text in response.response %}checked{% endif %}>
+              {% else %}
+                <input class="form-check-input" type="radio" name="response" value="{{ option.text }}"
+                       id="option{{ forloop.counter }}"
+                       {% if option.text == response.response %}checked{% endif %}>
+              {% endif %}
+              <label class="form-check-label" for="option{{ forloop.counter }}">{{ option.text }}</label>
+            </div>
+          {% endfor %}
+        </div>
+      {% endwith %}
+
+    {# Video Upload #}
+    {% elif step.step_type == "video" %}
+      <div class="mb-3">
+        <label class="form-label">Upload Your File/Video</label>
+        <input type="file" name="video" accept="video/*" class="form-control">
+        {% if response.video %}
+          <p class="mt-2">Current Video: <a href="{{ response.video.url }}" target="_blank">View</a></p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-success">Submit</button>
+  </form>
+</div>
+
+{% endblock %}

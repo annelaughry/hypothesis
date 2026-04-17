@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h2>{{ assignment.title }}</h2>
+
+{% if assignment.instructions %}
+  <div class="card">
+    <h3>Instructions</h3>
+    <div>{{ assignment.instructions|linebreaks }}</div>
+  </div>
+{% endif %}
+
+{% if assignment.link %}
+  <p><a href="{{ assignment.link }}" target="_blank">Open link</a></p>
+{% endif %}
+
+
+<form method="post" action="{% url 'classrooms:submit_responses' assignment.pk %}">
+  {% csrf_token %}
+  {{ formset.management_form }}  {# IMPORTANT for formsets #}
+
+  {% for q, form, resp, fb in pairs %}
+    <fieldset class="card">
+        <legend>Q{{ forloop.counter }}. {{ q.prompt }}</legend>
+        {{ form.as_p }}
+
+
+        {% if fb %}
+            <div class="card" style="background: rgba(187,189,246,.12); border-left: 4px solid var(--accent3); margin-top:.5rem;">
+                <p><strong>Teacher feedback:</strong> {{ fb.comment|default:"—" }}</p>
+                {% if fb.score is not None %}
+                    <p><strong>Score:</strong> {{ fb.score }}</p>
+                {% endif %}
+                <small class="muted">Last updated {{ fb.updated_at|date:'M d, Y H:i' }}</small>
+            </div>
+        {% endif %}
+    </fieldset>
+{% endfor %}
+
+  <button type="submit">Submit</button>
+</form>
+{% endblock %}

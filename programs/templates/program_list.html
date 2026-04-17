@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Available Programs</h2>
+    <div class="row">
+        {% for program in programs %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ program.name }}</h5>
+                        <p class="card-text">{{ program.description|truncatewords:20 }}</p>
+                        <a href="{% url 'programs:program_detail' program.id %}" class="btn btn-primary">View</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No programs available right now.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

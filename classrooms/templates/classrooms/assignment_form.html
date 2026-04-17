@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ assignment|default:'New' }} Assignment{% endblock %}
+{% block content %}
+<h1>{% if assignment %}Edit{% else %}Create{% endif %} Assignment for {{ classroom.name }}</h1>
+<div class="card">
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+
+    <h3>Questions</h3>
+    {{ formset.management_form }}
+    {% for f in formset %}
+      <fieldset class="card">
+        {{ f.as_p }}
+        {% if f.instance.pk %}
+          <label>{{ f.DELETE }} Delete this question</label>
+        {% endif %}
+      </fieldset>
+    {% endfor %}
+    <button type="submit" class="btn">Save</button>
+  </form>
+</div>
+<p><a href="{% url 'classrooms:teacher_classroom' classroom.id %}">← Back to class</a></p>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ activity.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <a href="{% url 'curriculum:theme_detail' activity.theme.slug %}" class="btn btn-link">
+    &larr; Back to {{ activity.theme.name }}
+  </a>
+
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <h1 class="mb-0">{{ activity.title }}</h1>
+
+    {% if is_admin %}
+      <a href="{% url 'curriculum:activity_edit' activity.pk %}" class="btn btn-outline-secondary btn-sm">
+        Edit Activity
+      </a>
+    {% endif %}
+  </div>
+
+
+  {% if activity.overview %}
+    <p class="mt-3">{{ activity.overview }}</p>
+  {% endif %}
+
+  <hr class="my-4">
+
+  <section class="mb-3">
+    <h3>Objectives</h3>
+    {% if activity.objectives %}
+      <p>{{ activity.objectives|linebreaks }}</p>
+    {% else %}
+      <p class="text-muted">Objectives will be added soon.</p>
+    {% endif %}
+  </section>
+
+  <section class="mb-3">
+    <h3>Keywords</h3>
+    {% if activity.keywords %}
+      <p>{{ activity.keywords }}</p>
+    {% else %}
+      <p class="text-muted">No keywords specified yet.</p>
+    {% endif %}
+  </section>
+
+  <section class="mb-3">
+    <h3>Investigation Steps</h3>
+
+    <h5>Observation</h5>
+    <p>{% if activity.observation %}{{ activity.observation|linebreaks }}{% else %}<span class="text-muted">Not specified.</span>{% endif %}</p>
+
+    <h5>Question</h5>
+    <p>{% if activity.question %}{{ activity.question|linebreaks }}{% else %}<span class="text-muted">Not specified.</span>{% endif %}</p>
+
+    <h5>Hypothesis</h5>
+    <p>{% if activity.hypothesis %}{{ activity.hypothesis|linebreaks }}{% else %}<span class="text-muted">Not specified.</span>{% endif %}</p>
+
+    <h5>Test (Procedure)</h5>
+    <p>{% if activity.test %}{{ activity.test|linebreaks }}{% else %}<span class="text-muted">Not specified.</span>{% endif %}</p>
+
+    <h5>Analysis</h5>
+    <p>{% if activity.analysis %}{{ activity.analysis|linebreaks }}{% else %}<span class="text-muted">Not specified.</span>{% endif %}</p>
+
+    <h5>Communication</h5>
+    <p>{% if activity.communication %}{{ activity.communication|linebreaks }}{% else %}<span class="text-muted">Not specified.</span>{% endif %}</p>
+  </section>
+
+  {# If you added materials/standards related models, you can show them here too #}
+  {% if activity.materials_list.all %}
+    <section class="mb-3">
+      <h3>Materials</h3>
+      <ul>
+        {% for m in activity.materials_list.all %}
+          <li>{{ m.text }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  {% if activity.standards_list.all %}
+    <section class="mb-3">
+      <h3>Standards</h3>
+      <ul>
+        {% for s in activity.standards_list.all %}
+          <li>{{ s.text }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+</div>
+<div></div>
+{% if activity.files.all %}
+  <section class="mb-3">
+    <h3>Files & Resources</h3>
+    <ul>
+      {% for f in activity.files.all %}
+        <li>
+          <a href="{{ f.file.url }}" target="_blank">
+            {{ f.description|default:f.file.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}
+</div>
+
+{% endblock %}

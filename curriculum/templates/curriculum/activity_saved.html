@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+
+{% block title %}Changes Saved{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Changes Saved</h1>
+  <p class="text-muted">
+    Your changes to <strong>{{ activity.title }}</strong> have been saved and are approved.
+  </p>
+
+  <div class="mt-3">
+    <a href="{% url 'curriculum:activity_detail' activity.pk %}" class="btn btn-primary">
+      View Activity
+    </a>
+    <a href="{% url 'curriculum:theme_detail' activity.theme.slug %}" class="btn btn-outline-secondary ms-2">
+      Back to {{ activity.theme.name }}
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,554 @@
+body {
+    background-color: #ffe6f0; /* Softer calming pink tone */
+    font-family: 'Arial', sans-serif;
+    color: #333; /* Dark text for good contrast */
+}
+
+/* Team Logos Navigation */
+.team-logos-nav {
+    display: flex;
+    justify-content: center;  /* Centers logos in the navbar */
+    align-items: center;
+    background: #151414;  /* Dark background to match navbar */
+    padding: 8px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Ensures it's always visible */
+}
+
+.navbar {
+    margin-top: 55px;
+    margin-bottom: 20px;
+    background-color: #333333; /* Dark gray background for a softer header */
+    z-index: 1000;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex;
+    align-items: center; /* Align logo and nav menu vertically */
+    padding: 10px 20px;
+}
+
+
+.navbar-brand {
+    font-weight: bold;
+    color: #ffffff; /* White text for header */
+    font-size: 1.2rem; /* Adjusted smaller font size */
+    margin-right: auto;
+}
+
+.navbar-nav {
+    display: flex;
+    gap: 15px; /* Add spacing between links */
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff; /* White links in header */
+    font-weight: 500; /* Slightly bold links */
+    transition: color 0.3s ease, text-decoration 0.3s ease; /* Smooth hover effect */
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ff5c77; /* Pink hover effect */
+    text-decoration: underline; /* Underline on hover */
+}
+
+.navbar-nav .nav-link.active {
+    color: #ff5c77; /* Pink for active links */
+    font-weight: bold;
+}
+
+.navbar-toggler {
+    background-color: #333333; /* Background color of the button */
+    border-radius: 8px; 
+    padding: 16px 10px; /* Spacing inside the button */
+    cursor: pointer; /* Hand cursor on hover */
+    display: flex; /* Ensure proper alignment for child elements */
+    align-items: center; /* Vertically align the lines inside the button */
+    justify-content: center; /* Center the lines horizontally */
+    transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+}
+
+
+.navbar-toggler-icon {
+    background-image: none !important; /* Disable default Bootstrap background image */
+}
+
+
+.navbar-toggler-icon {
+    position: relative;
+    display: inline-block;
+    width: 24px;
+    height: 2px; /* Uniform height for the middle line */
+    background-color: #ffffff; /* White for the middle line */
+    border-radius: 1px; /* Rounded edges */
+    transition: background-color 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px; /* Uniform height for all lines */
+    background-color: #ffffff; /* White for top and bottom lines */
+    border-radius: 1px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.navbar-toggler-icon::before {
+    bottom: 8px; /* Top line positioned above the middle line */
+    left: 0;
+}
+
+.navbar-toggler-icon::after {
+    top: 8px; /* Bottom line positioned below the middle line */
+    left: 0;
+}
+
+/* Ensure all three lines match on hover */
+.navbar-toggler:hover .navbar-toggler-icon,
+.navbar-toggler:hover .navbar-toggler-icon::before,
+.navbar-toggler:hover .navbar-toggler-icon::after {
+    background-color: #ff5c77; /* Pink on hover for all lines */
+}
+
+/* Fix inconsistent focus behavior */
+.navbar-toggler:focus .navbar-toggler-icon,
+.navbar-toggler:focus .navbar-toggler-icon::before,
+.navbar-toggler:focus .navbar-toggler-icon::after {
+    background-color: #ff5c77; /* Pink on focus for all lines */
+}
+
+/* Team Logo Links */
+.team-logo-link {
+    margin: 0 8px;
+    text-decoration: none;
+}
+
+/* Team Logo Small (Corrected Size) */
+.team-logo-small {
+    width: 40px;   /* ✅ Restrict to 40px width */
+    height: 40px;  /* ✅ Restrict to 40px height */
+    border-radius: 50%;  /* ✅ Makes them circular */
+    border: 2px solid white;  /* ✅ Adds a small white border */
+    object-fit: cover;  /* ✅ Ensures images keep aspect ratio */
+    transition: transform 0.2s ease-in-out;
+}
+
+.team-logo-small:hover {
+    transform: scale(1.2); /* Slight zoom effect on hover */
+}
+
+.container {
+    max-width: 960px;
+    padding: 20px;
+}
+
+.hero-section {
+    background: #ffffff; /* White background for welcome section */
+    color: #333; /* Dark text for contrast */
+    padding: 30px; /* Increased padding for spaciousness */
+    border-radius: 12px; /* More rounded corners for a friendlier look */
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow for emphasis */
+    text-align: center; /* Center align text */
+}
+
+.hero-section h1 {
+    font-size: 2.2rem; /* Slightly larger for prominence */
+    font-weight: bold;
+    color: #ff5c77; /* Pink for title */
+    margin-bottom: 15px;
+}
+
+.hero-section p {
+    font-size: 1rem; /* Slightly smaller for subtleness */
+    margin-top: 10px;
+    padding: 0 10px; /* Add padding around text */
+    color: #555; /* Medium gray for readability */
+}
+
+.announcement-list .list-group-item {
+    background-color: #ffffff; /* White background for announcements */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    transition: transform 0.2s ease, background-color 0.3s ease; /* Smooth hover effects */
+    padding: 15px; /* Add padding for better spacing */
+}
+
+.announcement-list .list-group-item:hover {
+    background-color: #ffe0e5; /* Slightly lighter pink on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    cursor: pointer;
+}
+
+.announcement-list .list-group-item::before {
+    content: '\1F514'; /* Bell icon before announcements */
+    margin-right: 10px;
+    color: #ff5c77; /* Pink for icon */
+}
+
+footer {
+    background-color: #333333;
+    color: #ffffff;
+    padding: 15px 0;
+    font-size: 0.9rem;
+    text-align: center;
+    border-top: 3px solid #ff5c77;
+}
+
+footer p {
+    margin-bottom: 5px;
+}
+
+footer .social-icons {
+    margin-top: 10px;
+}
+
+footer .social-icons a {
+    color: #cccccc; /* Lighter gray for better visibility */
+    margin: 0 10px;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+footer .social-icons a:hover {
+    color: #ff5c77; /* Pink hover effect for icons */
+}
+
+.logo {
+    max-width: 120px; /* Adjusted the size for better scaling */
+    height: auto; /* Maintains the aspect ratio */
+    display: block; /* Centers the logo */
+    margin: 10px auto; /* Centers the logo horizontally */
+}
+
+/* General Button Styling */
+button, .btn {
+    background-color: #ff5c77; /* Pink background */
+    color: #ffffff; /* White text */
+    border: 2px solid #ff5c77; /* Pink border */
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth effects */
+}
+
+button:hover, .btn:hover {
+    background-color: #ffffff; /* White background on hover */
+    color: #ff5c77; /* Pink text on hover */
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+button:active, .btn:active {
+    transform: scale(0.95); /* Slight press effect */
+}
+
+/* Specific Styles for Outline Buttons */
+.btn-outline-danger, .btn-outline-primary {
+    background-color: #ff5c77; /* Pink background */
+    color: #ffffff; /* White text */
+    border: 2px solid #ff5c77; /* Pink border */
+}
+
+.btn-outline-danger:hover, .btn-outline-primary:hover {
+    background-color: #ffffff; /* White background on hover */
+    color: #ff5c77; /* Pink text on hover */
+}
+
+
+/* Consistent Card Style */
+.card {
+    background-color: #ffffff; /* White background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease; /* Hover effect */
+}
+
+.card:hover {
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Consistent Text Color */
+h1, h2, h3, h4, h5, h6 {
+    color: #333; /* Dark gray */
+}
+
+p, li {
+    color: #555; /* Medium gray for body text */
+}
+
+
+/* General Dashboard Spacing */
+.dashboard-container {
+    margin-top: 30px;
+    margin-bottom: 50px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Title Styling */
+.section-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333333; /* Dark gray */
+    margin-bottom: 15px;
+    border-bottom: 3px solid #ff5c77; /* Pink underline */
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* Avatar Section */
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #ff5c77;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.custom-file-upload {
+    background-color: #ff5c77;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.custom-file-upload:hover {
+    background-color: white;
+    color: #ff5c77;
+    border: 2px solid #ff5c77;
+}
+.avatar-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.avatar-container button {
+    margin-top: 10px;
+    background-color: #ff5c77;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.avatar-container button:hover {
+    background-color: #ffffff;
+    color: #ff5c77;
+    border: 2px solid #ff5c77;
+    transform: scale(1.05);
+}
+
+/* List Group Styling */
+.list-group-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item:hover {
+    background-color: #ffe6f0;
+}
+
+/* --- Fix Form Layout --- */
+.form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffe5ec;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Ensure Proper Grid for Profile Fields --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* --- Make Labels and Inputs Consistent --- */
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* --- Avatar Section --- */
+.avatar-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* --- Fix Avatar Display --- */
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #ff5c77;
+    object-fit: cover;
+    display: block;
+    margin: 10px auto;
+}
+
+/* --- Custom File Upload Button --- */
+.custom-file-upload {
+    background-color: #ff5c77;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 10px;
+    transition: background-color 0.3s ease-in-out;
+}
+.custom-file-upload:hover {
+    background-color: white;
+    color: #ff5c77;
+    border: 2px solid #ff5c77;
+}
+
+/* --- Buttons (Generate & Save) --- */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+.btn-secondary {
+    background-color: #ff5c77;
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #ff1c50;
+}
+
+/* Progress Bar */
+.progress {
+    height: 20px;
+    border-radius: 10px;
+    background-color: #eeeeee;
+}
+
+.progress-bar {
+    background-color: #ff5c77;
+    font-size: 0.9rem;
+    font-weight: bold;
+    width: 100%;
+    height: 20px;
+}
+
+/* Classes Section */
+.classes-list .class-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.classes-list .class-item:hover {
+    background-color: #ffe6f0;
+}
+
+/* Footer */
+footer {
+    padding: 20px 0;
+    border-top: 3px solid #ff5c77;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #ffffff;
+    background-color: #333333;
+}
+/* Team Selection Container */
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Individual team card */
+.team-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    width: 250px; /* Fixed width */
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Team logos */
+.team-logo {
+    width: 100%; /* Forces it to fit */
+    height: 120px; /* Set a max height */
+    object-fit: contain; /* Ensures full visibility */
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+/* Team Name */
+.team-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Join button */
+.join-btn {
+    background-color: #ff5c77;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    margin-top: 10px;
+}
+
+.join-btn:hover {
+    background-color: white;
+    color: #ff5c77;
+    border: 2px solid #ff5c77;
+}
+
+
+
+
+
+
+
+

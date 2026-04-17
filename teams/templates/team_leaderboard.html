@@ -1,0 +1,9 @@
+
+<h2>Team Leaderboard</h2>
+<ul>
+  {% for team in teams %}
+    <li>{{ team.name }} - {{ team.total_points }} points</li>
+  {% endfor %}
+</ul>
+
+</html>

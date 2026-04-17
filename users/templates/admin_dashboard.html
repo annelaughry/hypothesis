@@ -1,0 +1,121 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Admin Dashboard</h2>
+
+  <!-- Teaching Requests -->
+  <div class="card mb-4">
+    <div class="card-header bg-warning text-dark fw-bold">
+      Pending Teaching Requests
+    </div>
+    <div class="card-body">
+      {% if teaching_requests %}
+        <ul class="list-group">
+          {% for request in teaching_requests %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ request.teacher.username }}</strong> wants to teach 
+                <strong>{{ request.program.name }}</strong>
+              </div>
+              <form method="post" action="{% url 'programs:approve_teaching_request' request.id %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-success">Approve</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No pending teaching requests.</p>
+      {% endif %}
+    </div>
+  </div>
+
+
+
+  <!-- Student Registrations -->
+  <div class="card mb-4">
+    <div class="card-header bg-info text-white fw-bold">
+      Pending Program Registrations
+    </div>
+    <div class="card-body">
+      {% if registrations %}
+        <ul class="list-group">
+          {% for reg in registrations %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ reg.student.username }}</strong> registered for 
+                <strong>{{ reg.program.name }}</strong>
+              </div>
+              <form method="post" action="{% url 'programs:approve_registration' reg.id %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-success">Approve</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No pending registrations.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Edit Program Requests -->
+  <div class="card">
+    <div class="card-header bg-secondary text-white fw-bold">
+      Pending Edit Program Requests
+    </div>
+    <div class="card-body">
+      {% if edit_requests %}
+        <ul class="list-group">
+          {% for request in edit_requests %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ request.teacher.username }}</strong> wants to edit 
+                <strong>{{ request.program.name }}</strong>
+              </div>
+              <form method="post" action="{% url 'programs:approve_edit_request' request.id %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-success">Approve</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No edit program requests.</p>
+      {% endif %}
+    </div>
+  </div>
+
+
+<!-- Program Creation Requests -->
+<div class="card mt-4">
+  <div class="card-header bg-success text-white fw-bold">
+    Pending Program Creation Requests
+  </div>
+  <div class="card-body">
+    {% if program_creation_requests %}
+      <ul class="list-group">
+        {% for request in program_creation_requests %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ request.teacher.username }}</strong> requested to create a program titled:
+              <strong>{{ request.title }}</strong><br>
+              <small class="text-muted">Requested on {{ request.requested_at|date:"Y-m-d H:i" }}</small>
+            </div>
+            <form method="post" action="{% url 'programs:approve_program_creation' request.id %}">
+              {% csrf_token %}
+              <button class="btn btn-sm btn-success">Approve</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">No pending program creation requests.</p>
+    {% endif %}
+  </div>
+</div>
+
+</div>
+{% endblock %}

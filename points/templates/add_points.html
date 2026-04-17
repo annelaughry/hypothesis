@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="bg-white p-4 rounded shadow-sm max-w-xl mx-auto">
+    <h2 class="h4 text-success mb-4">
+      Add Points to 
+      {% if student.profile.first_name or student.profile.last_name %}
+        {{ student.profile.first_name }} {{ student.profile.last_name }}
+      {% else %}
+        {{ student.email }}
+      {% endif %}
+    </h2>
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="mb-3">
+        {{ form.points_earned.label_tag }}
+        {{ form.points_earned }}
+        {% for error in form.points_earned.errors %}
+          <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.reason.label_tag }}
+        {{ form.reason }}
+        {% for error in form.reason.errors %}
+          <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      {% if form.program %}
+      <div class="mb-3">
+        {{ form.program.label_tag }}
+        {{ form.program }}
+        {% for error in form.program.errors %}
+          <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="mt-4">
+        <button type="submit" class="btn btn-success">Add Points</button>
+        <a href="{% url 'points:manage_points' %}" class="btn btn-secondary ms-2">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

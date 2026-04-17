@@ -1,0 +1,75 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<style>
+    /* Grid container for teams */
+    .team-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    /* Team Card */
+    .team-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 300px;
+    }
+
+    /* Team Logo */
+    .team-logo {
+        width: 100%;
+        height: 180px; /* Maintain rectangle shape */
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+    /* Button Styling */
+    .join-btn {
+        background-color: #ff5c77;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        width: 100%;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    .join-btn:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+
+</style>
+
+<div class="container text-center">
+    <h2>Select Your Team</h2>
+
+    <div class="team-container">
+        {% for team in teams %}
+            <div class="team-card">
+                <img src="{{ team.get_logo_url }}" alt="{{ team.name }} Logo" class="team-logo">
+               
+             <h3 class="team-name">{{ team.name }}</h3>
+            
+             {% if team.is_team_full %}
+                <p class="text-danger"><strong>This team is full</strong></p>
+                <button class="btn btn-secondary" disabled>Join Team</button>
+             {% else %}
+                <form method="post" action="{% url 'teams:join_team' team.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Join Team</button>
+                </form>
+            {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

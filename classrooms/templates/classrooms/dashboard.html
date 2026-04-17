@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+{# TEACHER SECTION #}
+
+<div class="dashboard-sections">
+    {% if is_teacher_user %}
+    <section class="card">
+        <h2>Your Classes (Teacher)</h2>
+
+        {% if teacher_classrooms %}
+            <ul>
+            {% for c in teacher_classrooms %}
+                <li>
+                  <a href="{% url 'classrooms:teacher_classroom' c.id %}">{{ c.name }}</a>
+                  <small class="muted">(code: {{ c.code }})</small>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">You don’t have any classes yet.</p>
+        {% endif %}
+
+        <p><a href="{% url 'classrooms:create_classroom' %}" class="btn">+ Create Class</a></p>
+    </section>
+    {% endif %}
+
+{# STUDENT SECTION: CLASSES #}
+<section class="card">
+  <h2>Your Classes (Student)</h2>
+  {% if student_classrooms %}
+    <ul>
+      {% for c in student_classrooms %}
+        <li>{{ c.name }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">You haven’t joined any classes yet.</p>
+  {% endif %}
+
+  <p>
+    <a href="{% url 'classrooms:join_classroom' %}" class="btn" style="margin-right:.5rem;">Join a Class</a>
+  </p>
+</section>
+
+{# STUDENT SECTION: UPCOMING ASSIGNMENTS #}
+<section class="card">
+  <h2>Upcoming Assignments</h2>
+  {% if upcoming_assignments %}
+    <ul>
+      {% for a in upcoming_assignments %}
+        <li>
+          <a href="{% url 'classrooms:assignment_detail' a.pk %}">{{ a.title }}</a>
+          <small class="muted">
+            — {{ a.classroom.name }}
+            {% if a.due_at %}
+              · due {{ a.due_at|date:'M d, Y H:i' }}
+            {% endif %}
+          </small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">No upcoming assignments.</p>
+  {% endif %}
+  <p><a href="{% url 'classrooms:my_feedback' %}" class="btn">View All Feedback</a></p>
+</section>
+</div>
+
+
+{% endblock %}

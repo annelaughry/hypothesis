@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+{% load program_tags %}
+
+{% block content %}
+
+{% if user.is_superuser or user.role == 'teacher' %}
+  <div class="d-flex justify-content-end mb-3">
+    <a href="{% url 'programs:edit_dataset' dataset.id %}" class="btn btn-outline-secondary">
+      ✏️ Edit Dataset
+    </a>
+  </div>
+{% endif %}
+
+
+<div class="container py-4">
+  <h2 class="mb-3">{{ dataset.name }}</h2>
+  <p>{{ dataset.description }}</p>
+
+  {% if rows %}
+    <div class="table-responsive mt-4">
+      <table class="table table-bordered table-striped bg-white">
+        <thead class="table-light">
+          <tr>
+            {% for col in columns %}
+              <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+            <tr>
+              {% for col in columns %}
+                <td>{{ row.data|get_item:col }}</td>
+              {% endfor %}
+            </tr>
+
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted mt-4">No data rows available for this dataset yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="text-center mt-4">
+  <img src="{% static 'images/ysa_logo.png' %}" style="width: 80px;" alt="Logo" />
+  <h2 class="mt-2 text-danger fw-bold">Food Waste Report</h2>
+</div>
+
+<div class="report-card my-4 p-4 shadow-sm rounded" style="background-color: #fff; max-width: 900px; margin: auto;">
+
+  {% if report_data %}
+    <div class="table-responsive mb-5">
+      <table class="table table-bordered text-center align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>🍽 Dish</th>
+            <th>🗑 Avg. Waste %</th>
+            <th>⭐ Avg. Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in report_data %}
+          <tr>
+            <td>{{ item.dish }}</td>
+            <td>{{ item.total_waste }}%</td>
+            <td>{{ item.average_rating }} ⭐</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-5">
+      <h5 class="text-center">📊 Average Waste % by Dish</h5>
+      <canvas id="wasteChart" height="150"></canvas>
+    </div>
+  {% else %}
+    <p class="text-center">No data available yet. Please submit your food entries.</p>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{% url 'foodwaste:food_entry' %}" class="btn btn-danger rounded-pill px-4">Submit Another Entry</a>
+  </div>
+</div>
+
+{{ report_data|json_script:"report-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const reportData = JSON.parse(document.getElementById("report-data").textContent);
+  const dishLabels = reportData.map(item => item.dish);
+  const avgWaste = reportData.map(item => item.total_waste);
+
+  const ctx = document.getElementById('wasteChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: dishLabels,
+      datasets: [{
+        label: 'Average Waste %',
+        data: avgWaste,
+        backgroundColor: '#ff5c77',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Waste (%)'
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

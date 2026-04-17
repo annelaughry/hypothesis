@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Manage Your Classrooms</h3>
+
+    <!-- List of Classrooms -->
+    <h4>Your Classrooms:</h4>
+    <ul>
+        {% for classroom in classrooms %}
+            <li>
+                <strong>{{ classroom.name }}</strong>
+                <p>Students: {% for student in classroom.students.all %}{{ student.username }}{% endfor %}</p>
+                <p>Lessons: {% for lesson in classroom.lessons.all %}{{ lesson.title }}{% endfor %}</p>
+            </li>
+        {% empty %}
+            <li>No classrooms found. You can create one below.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Classroom Creation Form -->
+    <h4>Create a New Classroom</h4>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Create Classroom</button>
+    </form>
+
+{% endblock %}

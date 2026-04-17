@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+  <h2 class="mb-4">Manage Student Points</h2>
+
+  {% if is_admin %}
+    <!-- Program Filter Form (Admin Only) -->
+    <form method="get" class="mb-4">
+    <label for="program-select" class="form-label">Filter by Program:</label>
+    <div class="d-flex gap-2">
+        <select name="program" id="program-select" class="form-select w-auto">
+        <option value="">-- All Programs --</option>
+        {% for prog in programs %}
+            <option value="{{ prog.id }}" {% if selected_program and prog.id == selected_program.id %}selected{% endif %}>
+            {{ prog.name }}
+            </option>
+        {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+    </div>
+    </form>
+    {% endif %}
+
+
+  {% if student_points %}
+  <div class="mt-4 bg-white border p-4 rounded shadow-sm">
+    <h4 class="mb-3">
+      {% if selected_program %}
+        Points Summary – {{ selected_program.name }}
+      {% else %}
+        Points Summary for All Programs
+      {% endif %}
+    </h4>
+
+    <table class="table table-sm table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Level</th>
+          {% if selected_program %}
+            <th>Program Points</th>
+          {% endif %}
+          <th>Total Points</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in student_points %}
+        <tr>
+          <td>
+            {% if entry.student.profile.short_name%}
+              {{ entry.student.profile.short_name }}
+            {% else %}
+              {{ entry.student.username }}
+            {% endif %}
+          </td>
+          <td>{{ entry.student.email }}</td>
+          <td>{{ entry.student.level|capfirst }}</td>
+          {% if selected_program %}
+            <td>{{ entry.program_points }}</td>
+          {% endif %}
+          <td>{{ entry.total_points }}</td>
+          <td>
+            <div class="btn-group btn-group-sm" role="group">
+              <a href="{% url 'points:add_points' entry.student.id %}" class="btn btn-outline-primary">Add</a>
+              <a href="{% url 'points:deduct_points' entry.student.id %}" class="btn btn-outline-danger">Deduct</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

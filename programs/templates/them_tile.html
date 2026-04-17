@@ -1,0 +1,13 @@
+<a href="{% if not theme.is_locked or user.is_staff %}{% url 'programs:programs_by_theme' theme.id %}{% else %}#{% endif %}"
+   class="theme-tile {% if theme.is_locked and not user.is_staff %}locked{% endif %}"
+   style="background-image: url('{{ bg_url }}');">
+
+  <h4 class="theme-name">{{ theme.name }}</h4>
+
+  {% if theme.is_locked and not user.is_staff %}
+    <div class="locked-overlay">
+      <img src="{% static 'images/lock_icon.png' %}" class="lock-icon" alt="Locked">
+      <p class="locked-message">Complete the YSA Way Test to unlock</p>
+    </div>
+  {% endif %}
+</a>

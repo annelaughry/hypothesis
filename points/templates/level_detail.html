@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">YSA Level Progress</h2>
+  <ul class="list-group">
+    {% for level in levels %}
+    <li class="list-group-item">
+      <h5>{{ level.name }}</h5>
+      <p class="mb-1">Points required: {{ level.min_points }}</p>
+      {% if level.multiplier %}
+        <p class="mb-1">Multiplier: {{ level.multiplier }}x</p>
+      {% endif %}
+      {% if level.description %}
+        <p class="mb-1">{{ level.description }}</p>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

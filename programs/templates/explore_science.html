@@ -1,0 +1,108 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #ffedf2;
+  }
+
+  .explore-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .goal-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .goal-header h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .activities-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .activity-card {
+    background: white;
+    border: 2px solid #ff5c77;
+    border-radius: 12px;
+    width: 280px;
+    min-height: 180px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .activity-card:hover {
+    transform: scale(1.03);
+  }
+
+  .activity-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #ff5c77;
+    margin-bottom: 10px;
+  }
+
+  .activity-desc {
+    color: #444;
+    font-size: 0.95rem;
+    flex-grow: 1;
+  }
+
+  .activity-link {
+    margin-top: 10px;
+    text-align: right;
+  }
+
+  .activity-link a {
+    color: #ff5c77;
+    text-decoration: underline;
+    font-weight: bold;
+  }
+
+  .activity-link a:hover {
+    color: #d44462;
+  }
+</style>
+
+<div class="container">
+    <h1 class="section-title">{{ goal.title }} Guided Research Activities</h1>
+
+    <div class="row">
+        {% for program in programs %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ program.name }}</h5>
+                        <p class="card-text">{{ program.description|truncatewords:20 }}</p>
+                        <p><strong>Created by:</strong> {{ program.teacher.get_full_name }}</p>
+                        {% if program.is_approved %}
+                            <span class="badge bg-success">Approved</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pending Approval</span>
+                        {% endif %}
+                        <a href="{% url 'programs:program_detail' program.id %}" class="btn btn-primary mt-2">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No programs available at this time.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

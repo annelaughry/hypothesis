@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2 class="mb-4">Edit Program: {{ program.name }}</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    {% if investigation_form %}
+      <hr>
+      <h4 class="mt-4">Edit Investigation Procedure</h4>
+      {{ investigation_form.as_p }}
+    {% endif %}
+
+    <button type="submit" class="btn btn-success mt-2">Save All Changes</button>
+    <a href="{% url 'programs:program_detail' program.id %}" class="btn btn-secondary mt-2 ms-2">Cancel</a>
+  </form>
+
+  {% if program.guided_activities.all %}
+    <hr>
+    <h4 class="mt-4">Guided Research Activities</h4>
+    <ul class="list-group">
+      {% for activity in program.guided_activities.all %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ activity.title }}</strong><br>
+            {{ activity.overview|truncatewords:20 }}
+          </div>
+          <a href="{% url 'programs:add_steps' activity.id %}" class="btn btn-sm btn-outline-primary">Edit Steps</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+{% endblock %}

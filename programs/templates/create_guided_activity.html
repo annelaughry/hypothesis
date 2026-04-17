@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2 class="mb-4">Create Guided Activity for "{{ program.name }}"</h2>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="card p-4 shadow-sm">
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <div class="mb-3">
+        <label for="id_title" class="form-label">Activity Title</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+          <div class="text-danger small">{{ form.title.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label for="id_overview" class="form-label">Overview</label>
+        {{ form.overview }}
+        {% if form.overview.errors %}
+          <div class="text-danger small">{{ form.overview.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-success">Create and Add Steps</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

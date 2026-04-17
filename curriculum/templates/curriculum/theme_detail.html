@@ -1,0 +1,97 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ theme.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <a href="{% url 'curriculum:home' %}" class="btn btn-link">&larr; Back to curriculum</a>
+
+  <h1 class="mt-3">{{ theme.name }}</h1>
+
+  {% if theme.description %}
+    <p class="mt-3">{{ theme.description }}</p>
+  {% endif %}
+
+  <hr class="my-4">
+
+  <section class="mb-4">
+  <h2>Guided Research Activities</h2>
+
+  {% if guided_activities %}
+    <ul class="list-unstyled">
+      {% for activity in guided_activities %}
+        <li class="mb-3">
+          <h4>
+            <a href="{{ activity.get_absolute_url }}">{{ activity.title }}</a>
+          </h4>
+          {% if activity.overview %}
+            <p class="text-muted">{{ activity.overview|truncatewords:40 }}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No guided research activities have been approved for this theme yet.</p>
+  {% endif %}
+  {% if is_teacher_user %}
+    <p>
+      <a href="{% url 'curriculum:activity_create' theme.slug %}" class="btn btn-primary">
+        + Create an Activity
+      </a>
+    </p>
+  {% endif %}
+</section>
+
+
+  {# You can keep your other sections (background links, project guide) below here #}
+
+
+  {# 2. Background Research Links #}
+  <section class="mb-4">
+    <h2>Background Research Links</h2>
+    {% if background_links %}
+      <ul>
+        {% for link in background_links %}
+          <li class="mb-2">
+            <a href="{{ link.url }}" target="_blank" rel="noopener">
+              {{ link.title }}
+            </a>
+            {% if link.description %}
+              <br><small class="text-muted">{{ link.description }}</small>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">Background research links for this theme will be added soon.</p>
+    {% endif %}
+  </section>
+
+  <hr>
+
+  {# 3. Project Guide #}
+  <section class="mb-4">
+    <h2>Project Guide</h2>
+    {% if project_guide %}
+      <h4>{{ project_guide.title }}</h4>
+      {% if project_guide.overview %}
+        <p>{{ project_guide.overview }}</p>
+      {% endif %}
+
+      {% if project_guide.document_url %}
+        <p>
+          <a href="{{ project_guide.document_url }}" target="_blank" class="btn btn-primary">
+            Open Project Guide
+          </a>
+        </p>
+      {% endif %}
+
+      {% if project_guide.notes %}
+        <p class="text-muted">{{ project_guide.notes }}</p>
+      {% endif %}
+    {% else %}
+      <p class="text-muted">The project guide for this theme will be added soon.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

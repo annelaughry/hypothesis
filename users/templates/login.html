@@ -1,0 +1,172 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pippet - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #ffe6f0; /* Soft pink background */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .login-container {
+            max-width: 420px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-container .card-header {
+            background-color: #333; /* Dark header */
+            color: #ffffff;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .form-label {
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: #0073e6; /* Primary blue for focus */
+            box-shadow: 0 0 8px rgba(0, 115, 230, 0.4);
+        }
+
+        .btn-primary {
+            background-color: #ff5c77; /* Pink for login button */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            padding: 12px 20px;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffffff;
+            color: #ff5c77;
+            border: 2px solid #ff5c77;
+            transform: scale(1.05);
+        }
+
+        .text-muted {
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .text-muted a {
+            color: #0073e6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .text-muted a:hover {
+            color: #ff5c77;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a {
+            color: #0073e6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .forgot-password a:hover {
+            color: #ff5c77;
+        }
+
+        .text-danger {
+            font-size: 0.9rem;
+            color: #ff5c77;
+        }
+
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 login-container">
+                <div class="card shadow">
+                    <div class="card-header">Login</div>
+                    <div class="card-body">
+                        {% if messages %}
+                            <div class="alert alert-warning" role="alert">
+                                {% for message in messages %}
+                                    <p>{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value }}" required>
+                                {% if form.username.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.username.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                {% if form.password.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.password.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </form>
+
+                        <!-- Register & Forgot Password -->
+                        <p class="text-muted mt-3">
+                            Don't have an account? <a href="{% url 'users:signup' %}">Register here</a>
+                        </p>
+
+                        <p class="forgot-password">
+                            <a href="{% url 'users:password_reset' %}">Forgot your password?</a>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

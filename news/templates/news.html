@@ -1,0 +1,99 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">🚀 What's Happening at YSA?</h2>
+
+<style>
+.highfive-button {
+    all: unset;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    position: relative;
+}
+.highfive-emoji {
+    font-size: 1.4rem;
+    transition: transform 0.2s ease;
+}
+.highfive-button:hover .highfive-emoji {
+    transform: scale(1.2) rotate(-5deg);
+}
+.highfive-count-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background-color: #f87171; /* red-400 */
+    color: white;
+    font-size: 0.6rem;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 9999px;
+    line-height: 1;
+}
+</style>
+
+<div class="space-y-6">
+    {% for announcement in announcements %}
+        <div class="bg-white border rounded-lg shadow-md p-5 relative">
+
+            {% if announcement.type == "badge" and announcement.user %}
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl animate-bounce">{{ announcement.badge_name|slice:":1" }}</span>
+                    <p class="text-sm text-gray-500">{{ announcement.created_at|date:"M d, Y" }}</p>
+                </div>
+                <h3 class="text-xl font-bold text-pink-600">
+                    👏 {{ celebratory_phrases|random }} {{ announcement.user.username }}!
+                </h3>
+                <p class="text-lg mt-1 text-gray-800">
+                    unlocked the <span class="font-semibold">{{ announcement.badge_name }}</span> badge 🏅!
+                </p>
+
+                <div class="text-sm text-gray-500">
+                    Drop a high five
+                    <form method="post" class="inline" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="announcement_id" value="{{ announcement.id }}">
+                        <input type="hidden" name="highfive_toggle" value="true">
+                        <button type="submit" class="highfive-button">
+                            <span class="highfive-emoji">🖐️</span>
+                            <span class="highfive-count-badge">{{ announcement.highfives.count|default:"0" }}</span>
+                        </button>
+                    </form>
+                    if you're proud!
+                </div>
+
+                {% if announcement.badge_name %}
+                    <div class="mt-3">
+                        {% if "1 Point" in announcement.badge_name %}
+                            <span class="inline-block px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800 font-medium">🥉 Bronze Tier</span>
+                        {% elif "2 Point" in announcement.badge_name %}
+                            <span class="inline-block px-3 py-1 text-sm rounded-full bg-gray-200 text-gray-700 font-medium">🥈 Silver Tier</span>
+                        {% elif "5 Point" in announcement.badge_name %}
+                            <span class="inline-block px-3 py-1 text-sm rounded-full bg-yellow-300 text-yellow-900 font-medium">🥇 Gold Tier</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+            {% elif announcement.type == "leaderboard" %}
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-xl">🏆</span>
+                    <p class="text-sm text-gray-500">{{ announcement.created_at|date:"M d, Y" }}</p>
+                </div>
+                <h3 class="text-lg font-semibold text-indigo-600">{{ announcement.title }}</h3>
+                <p class="mt-1 text-gray-800 whitespace-pre-line">{{ announcement.content }}</p>
+
+            {% else %}
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-xl">📢</span>
+                    <p class="text-sm text-gray-500">{{ announcement.created_at|date:"M d, Y" }}</p>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">{{ announcement.title }}</h3>
+                <p class="mt-1 text-gray-700 whitespace-pre-line">{{ announcement.content }}</p>
+            {% endif %}
+
+        </div>
+    {% empty %}
+        <p class="text-gray-500">No announcements yet — be the first to make history!</p>
+    {% endfor %}
+</div>
+{% endblock %}

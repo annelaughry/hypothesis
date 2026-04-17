@@ -1,0 +1,5 @@
+{% if user.is_pending %}
+    <p>Your account is still pending approval. Please check your email for verification.</p>
+{% else %}
+    <p>Your account has been approved! You can now access the site.</p>
+{% endif %}

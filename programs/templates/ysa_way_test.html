@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>YSA Way Test</h2>
+<p>Before accessing all themes, you must pass this test!</p>
+<form method="post">
+  {% csrf_token %}
+  <p><strong>1. What is the main goal of scientific investigation?</strong></p>
+  <input type="text" name="q1" class="form-control">
+
+  <p><strong>2. What do clouds need to form?</strong></p>
+  <input type="text" name="q2" class="form-control">
+
+  <p><strong>3. What causes warm air to rise?</strong></p>
+  <input type="text" name="q3" class="form-control">
+
+  <br>
+  <button type="submit" class="btn btn-success">Submit Test</button>
+</form>
+{% endblock %}

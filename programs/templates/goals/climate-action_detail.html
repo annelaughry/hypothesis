@@ -1,0 +1,100 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #ffedf2;
+  }
+
+  .goal-dashboard {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .goal-title {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 40px;
+  }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .resource-tile {
+    background: white;
+    border: 2px solid #ff5c77;
+    border-radius: 12px;
+    padding: 30px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ff5c77;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+  }
+
+  .resource-tile:hover {
+    background-color: #ff5c77;
+    color: white;
+  }
+
+  .goal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .goal-button {
+    background: white;
+    border: 2px solid #ff5c77;
+    color: #ff5c77;
+    padding: 16px 30px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    min-width: 220px;
+  }
+
+  .goal-button:hover {
+    background-color: #ff5c77;
+    color: white;
+  }
+</style>
+
+<div class="goal-dashboard">
+  <div class="goal-title">{{ goal.title }} Dashboard</div>
+
+  <div class="resource-grid">
+    <a href="#" class="resource-tile">CO₂ Maps</a>
+    <a href="#" class="resource-tile">Weather Balloon Data</a>
+    <a href="#" class="resource-tile">Previous Research Outcomes</a>
+    <!-- Inside your .resource-grid section in the goal detail template -->
+    <a href="{% url 'programs:goal_datasets' goal.slug %}" class="resource-tile">
+      Available Datasets
+    </a>
+    <a href="{% url 'foodwaste:home' %}" class="resource-tile">
+      🍽️ Food Waste Tracker
+    </a>
+
+
+  </div>
+
+  <div class="goal-actions">
+    <a href="{% url 'programs:explore_science' goal.slug %}" class="goal-button">Explore the Science</a>
+    <a href="{% url 'programs:plan_project' goal.slug %}" class="goal-button">Plan a Project</a>
+  </div>
+</div>
+{% endblock %}

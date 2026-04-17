@@ -1,0 +1,74 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2 class="mb-4 text-center">{{ theme.name }} Programs</h2>
+
+{% if user.is_superuser %}
+    <div class="mb-4 text-end">
+        <a href="{% url 'programs:create_program' %}" class="btn btn-success">+ Create New Program</a>
+    </div>
+{% endif %}
+
+{% if user.role == 'teacher' %}
+    {% with request_permission=program_creation_request %}
+        <div class="mb-4 text-end">
+            {% if request_permission and request_permission.is_approved %}
+                <a href="{% url 'programs:create_program' %}" class="btn btn-success">+ Create New Program</a>
+            {% elif request_permission %}
+                <p class="text-muted">Request to create programs is pending approval.</p>
+            {% else %}
+                <a href="{% url 'programs:request_program_creation' %}" class="btn btn-warning">Request to Create Programs</a>
+            {% endif %}
+        </div>
+    {% endwith %}
+{% endif %}
+
+
+<div class="row">
+  {% for program in programs %}
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h4 class="card-title">{{ program.name }}</h4>
+          <p class="card-text">{{ program.description|truncatewords:30 }}</p>
+
+          <a href="{% url 'programs:program_detail' program.id %}" class="btn btn-primary me-2">View</a>
+
+          {% if user.role == 'student' %}
+              {% if program.is_registered %}
+                  <p class="text-success mt-2">Registered</p>
+              {% else %}
+                  <a href="{% url 'programs:register_program' program.id %}" class="btn btn-sm btn-primary">Register</a>
+              {% endif %}
+
+          {% elif user.role == 'teacher' %}
+            {% if program.is_approved_to_teach %}
+                <span class="badge bg-success text-white">✅ Approved to Teach</span>
+            {% elif program.has_requested_to_teach %}
+                <span class="badge bg-info text-dark">Request Sent</span>
+            {% else %}
+                <a href="{% url 'programs:request_to_teach' program.id %}" class="btn btn-outline-warning">Teach This Program</a>
+            {% endif %}
+
+            {% if program.is_approved_to_teach %}
+                {% if program.has_edit_approval %}
+                    <a href="{% url 'programs:program_edit' program.id %}" class="btn btn-outline-dark">Edit</a>
+                {% else %}
+                    <a href="{% url 'programs:request_edit_access' program.id %}" class="btn btn-outline-secondary">Request Edit Access</a>
+                {% endif %}
+            {% endif %}
+
+          
+
+          {% elif user.is_superuser %}
+              <a href="{% url 'programs:program_edit' program.id %}" class="btn btn-outline-dark">Edit</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No programs found in this theme yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  .goal-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+  }
+
+  .goal-card {
+    position: relative;
+    width: 280px;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    display: flex;
+    align-items: flex-end;
+    padding: 15px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+
+  .goal-card:hover {
+    transform: scale(1.03);
+  }
+
+  .goal-name {
+    color: white;
+    font-weight: bold;
+    font-size: 1.4rem;
+    z-index: 2;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+  }
+</style>
+
+<div class="container">
+  <h2 class="text-center mb-4">YSA Goals</h2>
+  <div class="goal-grid">
+    {% for goal in goals %}
+      <a href="{% url 'programs:goal_detail' goal.slug %}"
+         class="goal-card"
+         style="background-image: url('{{ goal.image.url }}');">
+         
+        <div class="goal-name">{{ goal.title }}</div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

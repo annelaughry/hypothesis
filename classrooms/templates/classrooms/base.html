@@ -1,0 +1,48 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Classroom{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+  <body>
+{% block header %}
+<header>
+  <nav class="nav-links card">
+    <a href="/">Dashboard</a>
+    {% if user.is_authenticated %}
+      {% if teacher_classrooms %}
+        <a href="{% url 'my_classrooms' %}">My Classes</a>
+      {% endif %}
+      <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button class="btn">Logout</button>
+      </form>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+  </nav>
+</header>
+{% endblock %}
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
+
+    
+<script>
+  (function () {
+    function setBodyMode() {
+      document.body.classList.toggle('mobile', window.innerWidth < 640);
+    }
+    setBodyMode();
+    window.addEventListener('resize', setBodyMode);
+  })();
+</script>
+
+  </body>
+</html>

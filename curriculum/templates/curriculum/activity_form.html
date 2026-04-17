@@ -1,0 +1,173 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+  {% if is_edit %}Edit Activity – {{ theme.name }}{% else %}Create Activity – {{ theme.name }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <a href="{% url 'curriculum:theme_detail' theme.slug %}" class="btn btn-link">
+    &larr; Back to {{ theme.name }}
+  </a>
+
+  <h1 class="mt-3">
+    {% if is_edit %}Edit Guided Research Activity{% else %}Create Guided Research Activity{% endif %}
+  </h1>
+
+  <form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {# -------- MAIN FORM ERRORS -------- #}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <h3>Activity Information</h3>
+    <p>{{ form.title.label_tag }} {{ form.title }}</p>
+    <p>{{ form.overview.label_tag }} {{ form.overview }}</p>
+    <h3>Standards</h3>
+    {{ form.standards }}
+    {% if form.standards.errors %}
+      <div class="text-danger small">
+        {{ form.standards.errors }}
+      </div>
+    {% endif %}
+    <p>{{ form.objectives.label_tag }} {{ form.objectives }}</p>
+    <p>{{ form.keywords.label_tag }} {{ form.keywords }}</p>
+    <p>{{ form.observation.label_tag }} {{ form.observation }}</p>
+    <p>{{ form.question.label_tag }} {{ form.question }}</p>
+    <p>{{ form.hypothesis.label_tag }} {{ form.hypothesis }}</p>
+    <p>{{ form.test.label_tag }} {{ form.test }}</p>
+    <p>{{ form.analysis.label_tag }} {{ form.analysis }}</p>
+    <p>{{ form.communication.label_tag }} {{ form.communication }}</p>
+
+    {# -------- MATERIALS FORMSET -------- #}
+    <h3>Materials</h3>
+    {{ materials_formset.management_form }}
+
+    {% if materials_formset.non_form_errors %}
+      <div class="alert alert-danger">
+        {{ materials_formset.non_form_errors }}
+      </div>
+    {% endif %}
+
+   <div class="{{ materials_formset.prefix }}">
+  {% for m_form in materials_formset %}
+    <div class="material-item mb-2">
+      {# hidden fields, including id #}
+      {% for hidden in m_form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+
+      {{ m_form.text.label_tag }} {{ m_form.text }}
+
+      {% if m_form.errors %}
+        <div class="text-danger small">
+          {{ m_form.errors }}
+        </div>
+      {% endif %}
+
+      {% if m_form.instance.pk %}
+        {{ m_form.DELETE }} <label>Delete</label>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+    <button type="button"
+            class="btn btn-sm btn-secondary mt-2"
+            onclick="addForm('{{ materials_formset.prefix }}')">
+      + Add Material
+    </button>
+
+    {# hidden empty template for JS cloning #}
+    <div id="{{ materials_formset.prefix }}-empty-form" style="display:none;">
+      {{ materials_formset.empty_form.as_p }}
+    </div>
+
+    <hr>
+
+   
+        {# -------- FILES FORMSET -------- #}
+
+<hr>
+
+<h3>Files / Resources</h3>
+{{ file_formset.management_form }}
+
+{% if file_formset.non_form_errors %}
+  <div class="alert alert-danger">
+    {{ file_formset.non_form_errors }}
+  </div>
+{% endif %}
+
+<div class="{{ file_formset.prefix }}">
+  {% for f_form in file_formset %}
+    <div class="file-item mb-2">
+      {% for hidden in f_form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+
+      {{ f_form.file.label_tag }} {{ f_form.file }}<br>
+      {{ f_form.description.label_tag }} {{ f_form.description }}
+
+      {% if f_form.errors %}
+        <div class="text-danger small">
+          {{ f_form.errors }}
+        </div>
+      {% endif %}
+
+      {% if f_form.instance.pk %}
+        {{ f_form.DELETE }} <label>Delete</label>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+<button type="button"
+        class="btn btn-sm btn-secondary mt-2"
+        onclick="addForm('{{ file_formset.prefix }}')">
+  + Add File
+</button>
+
+<div id="{{ file_formset.prefix }}-empty-form" style="display:none;">
+  {{ file_formset.empty_form.as_p }}
+</div>
+
+    {# -------- SUBMIT BUTTON -------- #}
+    <button class="btn btn-primary mt-3" type="submit">
+      {% if is_edit %}
+        Save Changes
+      {% else %}
+        Submit for Approval
+      {% endif %}
+    </button>
+  </form>
+</div>
+
+<script>
+function addForm(prefix) {
+  // TOTAL_FORMS input for this formset
+  const totalFormsInput = document.getElementById('id_' + prefix + '-TOTAL_FORMS');
+  let formCount = parseInt(totalFormsInput.value);
+
+  // Container holding the current forms
+  const container = document.querySelector('.' + prefix);
+
+  // Hidden empty-form template HTML
+  const emptyFormTemplate = document.getElementById(prefix + '-empty-form').innerHTML;
+
+  // Replace __prefix__ placeholders with the new index
+  const newFormHtml = emptyFormTemplate.replace(/__prefix__/g, formCount);
+
+  // Append new form HTML
+  container.insertAdjacentHTML('beforeend', newFormHtml);
+
+  // Increment TOTAL_FORMS
+  totalFormsInput.value = formCount + 1;
+}
+</script>
+{% endblock %}

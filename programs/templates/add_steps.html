@@ -1,0 +1,125 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2 class="mb-4">Add Steps for "{{ activity.title }}"</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ formset.management_form }}
+
+    <div class="accordion" id="stepAccordion">
+      {% for form in formset.forms %}
+        <div class="accordion-item mb-3">
+          <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}">
+              Step {{ forloop.counter }} — {{ form.instance.get_step_key_display|default:"(New Step)" }}
+            </button>
+          </h2>
+          <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#stepAccordion">
+            <div class="accordion-body">
+              {{ form.id }}
+
+              <div class="mb-3">
+                <label class="form-label">Step Key</label>
+                {{ form.step_key }}
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Question / Title</label>
+                {{ form.question }}
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Step Type</label>
+                {{ form.step_type }}
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Points</label>
+                {{ form.points }}
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">External Link</label>
+                {{ form.external_link }}
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Order</label>
+                {{ form.order }}
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Attached File</label>
+                {{ form.attached_file }}
+              </div>
+
+              <div class="form-check mb-3">
+                {{ form.DELETE }}
+                <label class="form-check-label">Delete</label>
+              </div>
+
+              <!-- JS-generated dynamic field zone -->
+              <div class="js-dynamic-fields" data-step="{{ forloop.counter0 }}"></div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Save Steps</button>
+  </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const formCount = parseInt("{{ formset.total_form_count|escapejs }}");
+
+  for (let i = 0; i < formCount; i++) {
+    const typeField = document.getElementById(`id_form-${i}-step_type`);
+    const container = document.querySelector(`.js-dynamic-fields[data-step="${i}"]`);
+
+    function renderDynamicFields() {
+      const type = typeField.value;
+      container.innerHTML = ""; // Clear previous
+
+      if (type === "multiple_choice") {
+        container.innerHTML = `
+
+          <label class="form-label">Choices</label>
+          ${[1,2,3,4].map(j => `
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <input type="text" name="form-${i}-choice_${j}" class="form-control" placeholder="Choice ${j}">
+              <input type="checkbox" name="form-${i}-choice_${j}_correct" class="form-check-input">
+              <label class="form-check-label">Correct</label>
+            </div>`).join('')}
+        `;
+      }
+
+      else if (type === "fill_blank") {
+        container.innerHTML = `
+          <label class="form-label mt-3">Prompt</label>
+          <input type="text" name="form-${i}-question" class="form-control mb-2" placeholder="e.g., Water freezes at [blank] °C">
+          <p class="text-muted small">Use <strong>[blank]</strong> to indicate the blank space.</p>
+
+          <label class="form-label">Correct Answer</label>
+          <input type="text" name="form-${i}-correct_blank" class="form-control" placeholder="e.g., 0">
+        `;
+      }
+
+      else if (type === "video") {
+        container.innerHTML = `
+          <p class="text-muted mt-3">Students will be required to upload a video as their answer.</p>
+        `;
+      }
+    }
+
+    renderDynamicFields(); // Initial render
+    typeField.addEventListener("change", renderDynamicFields);
+  }
+});
+</script>
+
+{% endblock %}

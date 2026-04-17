@@ -1,0 +1,237 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #ffe6f0;
+        padding: 40px 20px;
+    }
+
+    .profile-card {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .profile-avatar {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        border: 4px solid #ff5c77;
+        object-fit: cover;
+    }
+
+    .profile-name {
+        font-size: 28px;
+        font-weight: bold;
+        font-family: "Gotham Rounded", "Avenir", sans-serif;
+        color: #333;
+        margin-top: 10px;
+    }
+
+    .profile-quote {
+        font-size: 18px;
+        font-family: "Gotham Rounded", "Avenir", sans-serif;
+        color: #333;
+        display: inline-block;
+        margin-top: 5px;
+    }
+
+    .profile-details {
+        text-align: left;
+        background: #fafafa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-details p {
+        font-size: 16px;
+        font-family: "Gotham Rounded", "Avenir", sans-serif;
+        color: #444;
+        margin-bottom: 8px;
+    }
+
+    .profile-edit-btn {
+        background-color: #ff5c77;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-family: "Gotham Rounded", "Avenir", sans-serif;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 20px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .profile-edit-btn:hover {
+        background-color: white;
+        color: #ff5c77;
+        border: 2px solid #ff5c77;
+        transform: scale(1.05);
+    }
+
+.cloud-bubble-container {
+    position: absolute;
+    top: -35px;
+    left: 40%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    animation: floatIn 0.6s ease-out;
+}
+
+@keyframes floatIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.cloud-bubble {
+    background: #fff;
+    border: 3px solid #ff5c77;
+    border-radius: 25px;
+    padding: 10px 18px;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+    font-family: "Gotham Rounded", "Avenir", sans-serif;
+    position: relative;
+    max-width: 240px;
+}
+
+.cloud-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    margin-left: -10px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border: 3px solid #ff5c77;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+}
+
+.cloud-bubble:hover {
+    transform: scale(1.03) rotate(-4deg);
+    transition: transform 0.2s ease-in-out;
+}
+
+
+
+.position-relative {
+    position: relative;
+}
+
+
+
+
+</style>
+
+<div class="profile-container">
+    <div class="profile-card">
+        <!-- Avatar + Team Logo + Pip Bubble -->
+        <div class="avatar-bubble-wrapper position-relative d-flex flex-column align-items-center mb-3">
+            {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" alt="User Avatar" class="profile-avatar">
+            {% elif profile.generated_avatar %}
+                <img src="{{ profile.generated_avatar.url }}" alt="Generated Avatar" class="profile-avatar">
+            {% else %}
+                <img src="{% static 'images/logo.png' %}" alt="Default Avatar" class="profile-avatar">
+            {% endif %}
+
+            {% if user.team and user.team.logo %}
+                <img src="{{ user.team.logo.url }}" alt="Team Logo" class="mt-2" style="height: 50px;">
+            {% endif %}
+
+            {% if user.profile.pip_quote %}
+                <div class="cloud-bubble-container">
+                    <div class="cloud-bubble">
+                        {{ user.profile.pip_quote }}
+                    </div>
+                    <div class="cloud-tail">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+
+
+        <!-- Name and Username -->
+        <h2 class="fw-bold text-center d-flex justify-content-center align-items-center gap-2">
+            {{ profile.short_name }}
+            <img src="{{ user.level_logo_url }}" alt="{{ user.level_name }}" style="height: 30px;">
+        </h2>
+        <p class="text-muted text-center">@{{ user.username }}</p>
+
+        {% if not user.profile.pip_quote %}
+            <p class="text-muted text-center">No Pip added yet.</p>
+        {% endif %}
+
+        <!-- Profile Details -->
+        <div class="profile-details">
+            <p><strong>Role:</strong> {{ profile.user.get_role_display }}</p>
+            {% if not profile.user.is_staff %}
+                <p><strong>School:</strong> {{ profile.school|default:"None" }}</p>
+            {% endif %}
+            <p><strong>Age:</strong> {{ profile.age|default:"N/A" }}</p>
+            <p><strong>Points:</strong> {{ points }}</p>
+            <p><strong>Team:</strong> 
+                {% if user.team %}{{ user.team.name }}
+                {% else %}<span class="text-danger">No team joined yet.</span>
+                {% endif %}
+            </p>
+
+            {% if not user.team %}
+                <p class="text-warning"><strong>Join a team before:</strong> {{ user.team_join_deadline }}</p>
+                {% if user.has_team_join_expired %}
+                    <p class="text-danger"><strong>Your deadline has passed. Contact an admin.</strong></p>
+                {% endif %}
+            {% endif %}
+
+            <p><strong>Badges:</strong></p>
+            {% if badges %}
+                <ul class="badge-list" style="padding-left: 1rem; margin-top: 0.25rem;">
+                    {% for badge in badges %}
+                        <li class="badge-item badge-{{ badge.tier }}">
+                            <span class="badge-emoji">{{ badge.emoji }}</span>
+                            <span class="badge-name">{{ badge.name }}</span>
+                            <small class="text-muted">(earned {{ badge.awarded_at|date:"M d, Y" }})</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">You haven’t earned any badges yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Edit Button -->
+        <a href="{% url 'users:edit_profile' %}" class="profile-edit-btn">Edit Profile</a>
+    </div>
+</div>
+{% endblock %}

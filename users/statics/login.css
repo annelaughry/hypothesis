@@ -1,0 +1,78 @@
+/* Style for the Login Page */
+.login-card {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+    margin: 50px auto;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-title {
+    font-size: 1.8rem;
+    color: #ff5c77; /* Pink for title */
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 1rem;
+    color: #333; /* Dark gray text */
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    transition: border 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #ff5c77; /* Pink border on focus */
+    outline: none;
+}
+
+.error-messages {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.error-text {
+    margin: 5px 0;
+}
+
+/* Add some custom spacing and adjust the button */
+button, .btn {
+    width: 100%;
+    background-color: #ff5c77;
+    color: #ffffff;
+    border: 2px solid #ff5c77;
+    padding: 10px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover, .btn:hover {
+    background-color: #ffffff;
+    color: #ff5c77;
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+button:active, .btn:active {
+    transform: scale(0.95); /* Slight press effect */
+}

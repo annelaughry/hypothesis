@@ -1,0 +1,69 @@
+{% extends "project_planner/base_planner.html" %}
+
+{% block planner_content %}
+<div class="mx-auto" style="max-width:900px">
+  <h1>Experimental Design</h1>
+  <p class="text-muted">
+    Plan your experiment, record your observations, and collect your data.
+  </p>
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-4">
+      <label class="form-label fw-bold">Materials List</label>
+      {{ form.materials }}
+      {% if form.materials.help_text %}<div class="form-text">{{ form.materials.help_text }}</div>{% endif %}
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label fw-bold">Experiment Set Up & Procedure</label>
+      {{ form.setup_description }}
+      {% if form.setup_description.help_text %}<div class="form-text">{{ form.setup_description.help_text }}</div>{% endif %}
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label fw-bold">Setup Image (Optional)</label>
+      {{ form.setup_image }}
+      {% if form.instance.setup_image %}
+        <div class="mt-2">
+          <p class="small text-muted">Current Image:</p>
+          <img src="{{ form.instance.setup_image.url }}" alt="Setup" style="max-height: 200px;" class="img-thumbnail">
+        </div>
+      {% endif %}
+      {% if form.setup_image.help_text %}<div class="form-text">{{ form.setup_image.help_text }}</div>{% endif %}
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label fw-bold">Observations</label>
+      {{ form.observations }}
+      {% if form.observations.help_text %}<div class="form-text">{{ form.observations.help_text }}</div>{% endif %}
+    </div>
+
+    <div class="mb-4 border p-3 bg-light rounded">
+      <label class="form-label fw-bold">Data Collection Table</label>
+      {{ form.data_table }}
+      {% if form.data_table.help_text %}<div class="form-text">{{ form.data_table.help_text }}</div>{% endif %}
+    </div>
+
+     <div class="mb-4">
+      <label class="form-label fw-bold">Additional Experiment Photos</label>
+      {{ form.experiment_photos }}
+       {% if form.instance.experiment_photos %}
+        <div class="mt-2">
+          <p class="small text-muted">Current Image:</p>
+          <img src="{{ form.instance.experiment_photos.url }}" alt="Experiment" style="max-height: 200px;" class="img-thumbnail">
+        </div>
+      {% endif %}
+      {% if form.experiment_photos.help_text %}<div class="form-text">{{ form.experiment_photos.help_text }}</div>{% endif %}
+    </div>
+ 
+    <hr class="my-5">
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">Save Experiment Details</button>
+        <a href="{% url 'project_planner:hypothesis_edit' %}" class="btn btn-outline-secondary ms-2">Back to Hypothesis</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "readingGuide/base.html" %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<div class="card" style="max-width: 450px; margin: 3rem auto; text-align: center;">
+  <img src="{% static 'img/ysalogo.png' %}" alt="YSA Logo" style="width: 140px; margin-bottom: 1rem;">
+  <h1 style="color: var(--primary); margin-bottom: 1rem;">YSA Test One</h1>
+
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if next %}
+      <input type="hidden" name="next" value="{{ next }}">
+    {% endif %}
+    <button type="submit" class="btn" style="width:100%;">Login</button>
+  </form>
+
+  <p style="margin-top: 1rem;">
+    Don’t have an account?
+    <a href="{% url 'register' %}" class="link-highlight">Register here</a>
+  </p>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+  <h2>{{ step.get_step_key_display }}{% if step.question %} — {{ step.question }}{% endif %}</h2>
+
+  {% if step.instructions %}
+    <div class="mb-3 alert alert-secondary">
+      <strong>Instructions:</strong><br>
+      {{ step.instructions|linebreaks }}
+    </div>
+  {% endif %}
+
+  {% if step.attached_file %}
+    <p><strong>Download File:</strong> <a href="{{ step.attached_file.url }}" target="_blank">{{ step.attached_file.name }}</a></p>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      {{ form.response.label_tag }}
+      {{ form.response }}
+    </div>
+
+    {% if step.step_key == 'communication' %}
+      <div class="mb-3">
+        {{ form.video.label_tag }}
+        {{ form.video }}
+      </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+{% endblock %}

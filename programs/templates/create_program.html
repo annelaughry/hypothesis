@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Create New Program</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <h5 class="mt-4">Program Info</h5>
+        <div class="mb-3">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+        <div class="mb-3">
+            {{ form.theme.label_tag }}
+            {{ form.theme }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+        </div>
+        <div class="mb-3">
+            {{ form.overview.label_tag }}
+            {{ form.overview }}
+        </div>
+        <div class="mb-3">
+            {{ form.objective.label_tag }}
+            {{ form.objective }}
+        </div>
+
+        <h5 class="mt-4">Curriculum Standards</h5>
+        <div class="mb-3">
+            {{ form.us_standards.label_tag }}
+            {{ form.us_standards }}
+        </div>
+        <div class="mb-3">
+            {{ form.moldovan_standards.label_tag }}
+            {{ form.moldovan_standards }}
+        </div>
+
+        <h5 class="mt-4">Details</h5>
+        <div class="mb-3">
+            {{ form.difficulty_level.label_tag }}
+            {{ form.difficulty_level }}
+        </div>
+        <div class="mb-3">
+            {{ form.materials.label_tag }}
+            {{ form.materials }}
+        </div>
+        <div class="mb-3">
+            {{ form.estimated_time.label_tag }}
+            {{ form.estimated_time }}
+        </div>
+        <div class="mb-3">
+            {{ form.keywords.label_tag }}
+            {{ form.keywords }}
+        </div>
+
+        <button type="submit" class="btn btn-success mt-3">Create</button>
+    </form>
+</div>
+{% endblock %}

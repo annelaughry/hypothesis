@@ -1,0 +1,167 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pippet - Base</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <!-- Messages Section -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert 
+                    {% if message.tags == 'success' %}alert-success
+                    {% elif message.tags == 'error' %}alert-danger
+                    {% elif message.tags == 'warning' %}alert-warning
+                    {% else %}alert-info{% endif %} 
+                    alert-dismissible fade show" role="alert">
+                    
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Auto-dismiss messages after 5 seconds -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                let alerts = document.querySelectorAll(".alert");
+                alerts.forEach(alert => {
+                    alert.classList.remove("show");
+                    alert.classList.add("fade");
+                    setTimeout(() => alert.remove(), 500);  // Remove after fade out
+                });
+            }, 5000); // 5 seconds
+        });
+    </script>
+
+
+    <!-- ✅ Navbar -->
+<!-- Final Working Navbar with Left Menu and Centered Logo (Responsive) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="w-100 d-flex justify-content-between align-items-center px-3">
+
+        <!-- Left: Toggle + Nav Links -->
+        <div class="d-flex align-items-center">
+            <!-- Toggle Button -->
+            <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+        <!-- Navigation Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/teams/' %}active{% endif %}" href="{% url 'teams:team_overview' %}">Teams</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/leaderboard/' %}active{% endif %}" href="{% url 'leaderboard:student_leaderboard' %}">
+                    Leaderboard
+                </a>
+            </li>
+
+
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/programs/' %}active{% endif %}" href="{% url 'programs:goal_list' %}">YSA Goals</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/news/' %}active{% endif %}" href="{% url 'news:news' %}">News</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/curriculum/' %}active{% endif %}" href="{% url 'curriculum:home' %}">Curriculum</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/classrooms/' %}active{% endif %}" href="{% url 'classrooms:dashboard' %}">Classrooms</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/project_planner/' %}active{% endif %}" href="{% url 'project_planner:home' %}">Project Planner</a>
+            </li>
+            </ul>
+        </div>
+        </div>
+
+    <!-- Center: Logo -->
+    <a class="navbar-brand position-absolute start-50 translate-middle-x" href="{% url 'home' %}">
+      <img src="{% static 'images/logo.png' %}" alt="logo" class="logo" style="max-height: 50px;">
+    </a>
+
+    <!-- Right: Avatar Dropdown -->
+    {% if user.is_authenticated %}
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="{{ nav_profile_pic }}" alt="Avatar" onerror="this.src='/static/images/logo.png';"
+               class="rounded-circle" style="width: 45px; height: 45px; object-fit: cover; border: 2px solid white;">
+          <span class="fw-bold d-none d-md-inline" style="color: {{ nav_level_color }};">{{ user.username }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="{% url 'users:profile' %}">Profile</a></li>
+          {% if user.is_superuser %}
+            <li><a class="dropdown-item" href="{% url 'users:admin_dashboard' %}">Admin Dashboard</a></li>
+          {% endif %}
+          {% if user.role == 'teacher' %}
+            <li><a class="dropdown-item" href="{% url 'users:teacher_dashboard' %}">Teacher Dashboard</a></li>
+          {% elif user.role == 'student' %}
+            <li><a class="dropdown-item" href="{% url 'users:student_dashboard' %}">Student Dashboard</a></li>
+          {% endif %}
+          <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+    {% endif %}
+
+  </div>
+</nav>
+
+
+    <!-- ✅ Team Logos Bar (Now BELOW navbar) -->
+    {% if teams %}
+    <div class="team-logos-nav">
+        {% for team in teams %}
+            <a href="{% url 'teams:team_detail' team.id %}" class="team-logo-link">
+                <img src="{{ team.get_logo_url }}" alt="{{ team.name }}" class="team-logo-small">
+            </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+
+    <!-- ✅ Push Down Content to Avoid Overlap -->
+    <div class="content-container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center mt-5">
+        <p>&copy; {% now "Y" %} Young Scientist Academy App. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var avatarUpload = document.getElementById('avatar-upload');
+            if (avatarUpload) {
+                avatarUpload.addEventListener('change', function () {
+                    this.form.submit();
+                });
+            }
+        });
+    </script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
+
+</body>
+</html>

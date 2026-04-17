@@ -1,0 +1,109 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="mb-4">Teacher Dashboard</h3>
+    <p>Welcome, {{ user.username }}! Here you can manage your teaching programs and activities.</p>
+
+    <!-- Avatar Section -->
+    <div class="avatar-container text-center mb-4">
+        {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="Uploaded Avatar" class="avatar shadow mb-3">
+        {% elif profile.generated_avatar %}
+            <img src="{{ profile.generated_avatar.url }}" alt="Generated Avatar" class="avatar shadow mb-3">
+        {% else %}
+            <p class="text-muted">No avatar set. Please upload or design one.</p>
+        {% endif %}
+
+        <a href="{% url 'users:edit_profile' %}" class="btn btn-primary">Edit Profile & Manage Avatar</a>
+    </div>
+
+    <!-- Points -->
+    <div class="section mb-5">
+        <h4><i class="fas fa-chart-line me-2"></i>Your Points</h4>
+        {% if points %}
+        <div class="progress mb-4">
+            <div class="progress-bar bg-success" role="progressbar"
+                 style="--progress-width: {{ progress_width }}%;"
+                 aria-valuenow="{{ progress_width }}"
+                 aria-valuemin="0" aria-valuemax="100">
+                 {{ points }} Points
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted text-center">You haven't earned any points yet.</p>
+        {% endif %}
+    </div>
+
+    {% if points and not profile.points_transferred %}
+        <form method="post" action="{% url 'users:transfer_points_to_team' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-success mt-3">Transfer Your Points to Your Team</button>
+        </form>
+    {% elif profile.points_transferred %}
+        <p class="text-success mt-3">✅ You've already transferred your points to your team.</p>
+    {% endif %}
+
+    <!-- Announcements -->
+    <h4>Recent Announcements:</h4>
+    <ul class="list-group mb-4">
+        {% for announcement in announcements %}
+            <li class="list-group-item">
+                <strong>{{ announcement.title }}</strong>
+                <p>{{ announcement.content }}</p>
+                <small class="text-muted">{{ announcement.created_at|date:"F j, Y" }}</small>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No announcements yet.</li>
+        {% endfor %}
+    </ul>
+
+    <nav aria-label="Announcements pagination">
+        <ul class="pagination">
+            {% if announcements.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ announcements.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ announcements.number }} of {{ announcements.paginator.num_pages }}</span>
+            </li>
+            {% if announcements.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ announcements.next_page_number }}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ announcements.paginator.num_pages }}">Last</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Approved Programs -->
+    <h4>Your Approved Programs:</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Program</th>
+                <th>Theme</th>
+                <th>Students Registered</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for program in approved_programs %}
+                <tr>
+                    <td>{{ program.name }}</td>
+                    <td>{{ program.theme.name }}</td>
+                    <td>{{ program.registrations.count }}</td>
+                    <td>
+                        <a href="{% url 'programs:program_detail' program.id %}" class="btn btn-sm btn-primary">View</a>
+                        <a href="{% url 'programs:program_edit' program.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No approved programs yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+    .team-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .team-logo-large {
+        width: 200px;
+        height: 200px;
+        object-fit: contain;
+        border-radius: 10px;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .team-info {
+        text-align: center;
+        font-size: 18px;
+        color: #555;
+    }
+
+    .members-list {
+        list-style: none;
+        padding: 0;
+        text-align: center;
+    }
+
+    .members-list li {
+        font-size: 16px;
+        color: #333;
+        padding: 5px 0;
+    }
+</style>
+
+<div class="team-header">
+    <img src="{{ team.get_logo_url }}" alt="{{ team.name }} Logo" class="team-logo-large">
+    <h2>{{ team.name }}</h2>
+    <p class="team-info">{{ team.description|default:"No description available." }}</p>
+    <p class="team-info"><strong>Leaderboard:</strong> 
+        {% if team.leader %}
+            {{ team.leader.username }} ({{ team.leader.profile.points_transferred }} points transferred)
+        {% else %}
+            No leader yet
+        {% endif %}
+    </p>
+    
+    <p class="team-info"><strong>Total Points:</strong> {{ team.total_points }}</p>
+    <p class="team-info"><strong>Members:</strong> {{ team.member_count }}</p>
+</div>
+
+<h3 class="text-center">Team Members</h3>
+<ul class="members-list">
+    {% for member in members %}
+        <li>{{ member.username }} ({{ member.profile.points_transferred }} points transferred)</li>
+    {% empty %}
+        <li>No members yet.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'teams:team_overview' %}" class="btn btn-secondary d-block mx-auto mt-3" style="max-width: 200px;">Back to Teams</a>
+{% endblock %}

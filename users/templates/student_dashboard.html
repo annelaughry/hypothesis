@@ -1,0 +1,136 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="mb-4 p-3 rounded shadow-sm border bg-white">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <strong>{{ level_info.name }}</strong>
+    <a href="{% url 'points:level_detail' %}" class="text-decoration-none small text-muted">View level details</a>
+  </div>
+
+  <div class="progress" style="height: 25px;">
+  <div
+    class="progress-bar progress-bar-striped bg-success text-white"
+    role="progressbar"
+    style="width: {{ progress_width }}%; height: 100%; line-height: 25px;"
+    aria-valuenow="{{ progress_width }}"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    title="{{ points }} points"
+  >
+    {% if progress_width|floatformat:0 > 10 %}
+      {{ points }} pts
+    {% endif %}
+  </div>
+</div>
+
+
+  <div class="text-end mt-1 small text-muted">
+    {% if remaining_points > 0 %}
+      {{ remaining_points }} pts to {{ next_level_name}}
+    {% else %}
+      ✅ Max level reached
+    {% endif %}
+  </div>
+</div>
+
+
+<div class="container mt-5">
+    <h3 class="mb-4">Student Dashboard</h3>
+    <p>Welcome, {{ user.username }}! Track your progress and explore your learning journey.</p>
+
+    <!-- Avatar Section -->
+    <div class="avatar-container text-center mb-4">
+        {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="Uploaded Avatar" class="avatar shadow mb-3">
+        {% elif profile.generated_avatar %}
+            <img src="{{ profile.generated_avatar.url }}" alt="Generated Avatar" class="avatar shadow mb-3">
+        {% else %}
+            <p class="text-muted">No avatar set. Please upload or design one.</p>
+        {% endif %}
+        <a href="{% url 'users:edit_profile' %}" class="btn btn-primary">Edit Profile & Manage Avatar</a>
+    </div>
+
+    <!-- Team Info -->
+    <div class="section mb-5">
+        <h4><i class="fas fa-users me-2"></i>Your Team</h4>
+        {% if user.team %}
+            <div class="card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <span>{{ user.team.name }}</span>
+                    <span class="badge bg-primary">{{ user.team.total_points }} Points</span>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted">You haven't joined a team yet.</p>
+        {% endif %}
+    </div>
+
+
+    {% if points and not profile.points_transferred %}
+        <form method="post" action="{% url 'users:transfer_points_to_team' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-success mt-3">Transfer Your Points to Your Team</button>
+        </form>
+    {% elif profile.points_transferred %}
+        <p class="text-success mt-3">✅ You've already transferred your points to your team.</p>
+    {% endif %}
+
+
+    <!-- Registered Programs -->
+    <div class="section mb-5">
+        <h4><i class="fas fa-flask me-2"></i>Your Programs</h4>
+
+        {% if registered_programs %}
+            <ul class="list-group">
+                {% for registration in registered_programs %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ registration.program.name }}</strong><br>
+                                Theme: {{ registration.program.theme.name }}<br>
+                                <small class="text-muted">
+                                    Progress: {{ registration.completed_steps }} / {{ registration.total_steps }} steps
+                                </small>
+                            </div>
+                            <a href="{% url 'programs:program_detail' registration.program.id %}" class="btn btn-sm btn-outline-primary">
+                                View
+                            </a>
+                        </div>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                style="width: {{ registration.progress }}%;"
+                                aria-valuenow="{{ registration.progress }}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">You're not registered for any programs yet.</p>
+        {% endif %}
+    </div>
+    <div class="section mb-5">
+            <h4><i class="fas fa-clock me-2"></i>Upcoming Deadlines</h4>
+            {% if deadline_warnings %}
+                <ul class="list-group">
+                    {% for warning in deadline_warnings %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ warning.activity.title }}</strong> ({{ warning.program.name }})<br>
+                                Deadline: {{ warning.end_date }} — <span class="text-danger">{{ warning.days_left }} day{{ warning.days_left|pluralize }} left</span>
+                            </div>
+                            <a href="{% url 'programs:view_guided_activity' warning.activity.id %}" class="btn btn-sm btn-outline-danger">Go</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No deadlines in the next 3 days.</p>
+            {% endif %}
+        </div>
+
+
+</div>
+{% endblock %}

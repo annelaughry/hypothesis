@@ -1,0 +1,104 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="container py-4">
+  <h2 class="mb-4">Review Student Responses – {{ activity.title }}</h2>
+  <p class="text-muted">From program: <strong>{{ activity.program.name }}</strong></p>
+
+    {% if teacher_timeline %}
+    <div class="mb-4 d-flex align-items-center justify-content-between border-bottom pb-2">
+        <div>
+        <h5 class="mb-0">⏱️ Activity Timeline</h5>
+        <small class="text-muted">
+            {{ teacher_timeline.start_date }} → {{ teacher_timeline.end_date|default:"No end date" }}
+        </small>
+        </div>
+        {% if can_assign_timeline %}
+        <a href="{% url 'programs:assign_activity_timeline' activity.id %}" class="btn btn-outline-primary btn-sm">
+            📅 Set/Update Timeline
+        </a>
+        {% endif %}
+    </div>
+    {% elif can_assign_timeline %}
+    <div class="mb-4 d-flex justify-content-end">
+        <a href="{% url 'programs:assign_activity_timeline' activity.id %}" class="btn btn-outline-primary btn-sm">
+        📅 Set Timeline
+        </a>
+    </div>
+    {% endif %}
+
+
+  {% for step, responses in responses_by_step.items %}
+    <div class="mt-5 border rounded p-4 bg-light">
+      <h4 class="mb-3">Step {{ step.order }}: {{ step.get_step_key_display }}</h4>
+
+      {% if step.instructions %}
+        <p><strong>Instructions:</strong> {{ step.instructions }}</p>
+      {% endif %}
+      {% if step.question %}
+        <p><strong>Question:</strong> {{ step.question }}</p>
+      {% endif %}
+
+      {% if responses %}
+        <table class="table table-sm table-striped mt-3">
+          <thead class="table-light">
+            <tr>
+              <th>Student</th>
+              <th>Response</th>
+              <th>Submitted At</th>
+              <th>Points</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for response in responses %}
+              <tr class="align-middle">
+                <td class="text-nowrap">
+                  {% if response.student.profile.short_name %}
+                    {{ response.student.profile.short_name }}
+                  {% else %}
+                    {{ response.student.email }}
+                  {% endif %}
+                </td>
+
+                <td class="text-break" style="max-width: 300px;">
+                  {% if step.step_type == 'video' and response.video %}
+                    <video width="240" controls>
+                      <source src="{{ response.video.url }}" type="video/mp4">
+                    </video>
+                  {% else %}
+                    {{ response.response|linebreaks }}
+                  {% endif %}
+                </td>
+
+                <td class="text-nowrap">{{ response.submitted_at|date:"M d, Y H:i" }}</td>
+
+                <td class="text-center">
+                  {% if response.awarded_points is not None %}
+                    {{ response.awarded_points }}
+                  {% else %}
+                    {{ step.points }}
+                  {% endif %}
+                </td>
+
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <form method="post" action="{% url 'programs:assign_step_points' step.id response.student.id %}" class="d-flex align-items-center gap-2">
+                      {% csrf_token %}
+                      <input type="number" name="points" min="0" value="{{ response.awarded_points|default_if_none:'' }}" required class="form-control form-control-sm" style="width: 70px;" placeholder="Score">
+                      <button type="submit" class="btn btn-sm btn-danger">Award</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="text-muted">No student has submitted this step yet.</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

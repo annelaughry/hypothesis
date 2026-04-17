@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container py-4">
+  <h2>{{ goal.title }} – Available Datasets</h2>
+
+  {% if datasets %}
+    <ul class="list-group mt-4">
+      {% for dataset in datasets %}
+        <li class="list-group-item">
+          <a href="{% url 'programs:dataset_detail' dataset.id %}" class="text-decoration-none fw-bold text-dark">
+            {{ dataset.name }}
+           </a>
+            {% if dataset.description %}
+            <p class="mb-1 text-muted">{{ dataset.description }}</p>
+            {% endif %}
+
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No datasets have been added for this goal yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

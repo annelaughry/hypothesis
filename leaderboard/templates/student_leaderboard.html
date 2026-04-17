@@ -1,0 +1,164 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #ffeef3;
+    color: #1e1e1e;
+    font-family: 'Arial', sans-serif;
+  }
+
+  .leaderboard-toggle {
+    background-color: #1a1a1a;
+    border-radius: 50px;
+    display: inline-flex;
+    padding: 6px;
+    margin: 30px auto 20px;
+  }
+
+  .leaderboard-toggle a {
+    padding: 12px 32px;
+    border-radius: 40px;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+
+  .leaderboard-toggle a.active {
+    background-color: #3CBBB1;
+    color: black;
+  }
+
+  .leaderboard-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: background 0.3s ease;
+  }
+
+  .leaderboard-row:hover {
+    background-color: #f5f5f5;
+  }
+
+  .student-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eee;
+  }
+
+  .info-block {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .level-badge {
+    font-size: 12px;
+    color: #3CBBB1;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  .student-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+  }
+
+  .student-name:hover {
+    text-decoration: underline;
+  }
+
+  .team-name {
+    font-size: 14px;
+    color: #aaa;
+  }
+
+  .team-name a {
+    color: #3CBBB1;
+    text-decoration: none;
+  }
+
+  .rank-box {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #3CBBB1;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px; /* reduced from 16px */
+  margin-right: 16px;
+  color: #1e1e1e;
+}
+
+.points-pill {
+  background-color: #3CBBB1;
+  color: black;
+  font-weight: 600;
+  padding: 6px 14px; /* smaller pill */
+  border-radius: 20px;
+  font-size: 14px;   /* reduced from 16px */
+  min-width: 50px;
+  text-align: center;
+}
+
+</style>
+
+<div class="d-flex justify-content-center">
+  <div class="leaderboard-toggle text-center">
+    <a href="{% url 'leaderboard:student_leaderboard' %}"
+       class="{% if request.resolver_match.url_name == 'student_leaderboard' %}active{% endif %}">
+       Students
+    </a>
+    <a href="{% url 'leaderboard:leaderboard_team' %}"
+       class="{% if request.resolver_match.url_name == 'leaderboard_team' %}active{% endif %}">
+       Teams
+    </a>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="leaderboard-header d-flex justify-content-between mb-2 px-3">
+    <div style="width: 60px; font-weight: bold; color: #1e1e1e;">Rank</div>
+    <div style="flex-grow: 1; font-weight: bold; color: #1e1e1e;">Student</div>
+    <div style="min-width: 70px; text-align: right; font-weight: bold; color: #1e1e1e;">Tot Points</div>
+  </div>
+
+  {% for student in students %}
+    <div class="leaderboard-row">
+      <div class="d-flex align-items-center gap-3 flex-grow-1">
+        <div class="rank-box">{{ forloop.counter }}</div>
+        <img src="{{ student.avatar_url }}" class="student-avatar" alt="avatar">
+        <div class="info-block">
+          {% if student.profile.level %}
+            <div class="level-badge">{{ student.profile.level }}</div>
+          {% endif %}
+          <a href="{% url 'users:profile_other' student.username %}" class="student-name">
+            {{ student.profile.short_name }}
+          </a>
+          <div class="team-name">
+            {% if student.team %}
+              <a href="{% url 'teams:team_detail' student.team.id %}">
+                {{ student.team.name }}
+              </a>
+            {% else %}
+              No Team
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="points-pill">{{ student.total_points }}</div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

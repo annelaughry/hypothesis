@@ -1,0 +1,10 @@
+<form method="POST" action="{% url 'users:generate_avatar' %}">
+    {% csrf_token %}
+    <label for="style">Choose Avatar Style:</label>
+    <select name="style" id="style">
+        <option value="avataaars">Avataaars</option>
+        <option value="micah">Micah</option>
+        <option value="gridy">Gridy</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Generate Avatar</button>
+</form>

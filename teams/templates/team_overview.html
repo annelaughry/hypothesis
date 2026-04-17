@@ -1,0 +1,72 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<style>
+    .team-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .team-card {
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        text-align: center;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .team-card:hover {
+        transform: scale(1.05);
+    }
+
+    .team-logo {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .team-name {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        margin-top: 10px;
+    }
+
+    .team-leaderboard {
+        font-size: 16px;
+        color: #555;
+    }
+
+    .team-points {
+        font-size: 16px;
+        font-weight: bold;
+        color: #0073e6;
+    }
+</style>
+
+
+<div class="team-container">
+    {% for team in teams %}
+        <div class="team-card">
+            <a href="{% url 'teams:team_detail' team.id %}">
+                <img src="{{ team.get_logo_url }}" alt="{{ team.name }} Logo" class="team-logo">
+            </a>
+            <h3 class="team-name">{{ team.name }}</h3>
+            <p class="team-info"><strong>Leaderboard:</strong> 
+                {% if team.leader %}
+                    {{ team.leader.username }} ({{ team.leader.profile.points_transferred }} points transferred)
+                {% else %}
+                    No leader yet
+                {% endif %}
+            </p>
+            <p class="team-points"><strong>Points:</strong> {{ team.total_points }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

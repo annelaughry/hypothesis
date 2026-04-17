@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4 text-danger fw-bold">All Food Submissions</h2>
+
+  <table class="table table-bordered text-center align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>🍽 Dish</th>
+        <th>🗑 Waste %</th>
+        <th>⭐ Rating</th>
+        <th>💭 Reason</th>
+        <th>💬 Comment</th>
+        <th>📅 Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+        {% for dish_waste in entry.dish_wastes.all %}
+          <tr>
+            <td>{{ dish_waste.dish.name }}</td>
+            <td>{{ dish_waste.waste_percentage }}%</td>
+            <td>{{ dish_waste.rating }} ⭐</td>
+            {% if forloop.first %}
+              <td rowspan="{{ entry.dish_wastes.count }}">{{ entry.waste_reason|default:"—" }}</td>
+              <td rowspan="{{ entry.dish_wastes.count }}">{{ entry.comments|default:"—" }}</td>
+              <td rowspan="{{ entry.dish_wastes.count }}">{{ entry.date|date:"F j, Y" }}</td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      {% empty %}
+        <tr>
+          <td colspan="6" class="text-muted">No submissions yet.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

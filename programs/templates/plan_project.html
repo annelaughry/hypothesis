@@ -1,0 +1,65 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #ffedf2;
+  }
+
+  .plan-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .plan-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .resource-card {
+    background: white;
+    border: 2px solid #ff5c77;
+    border-radius: 12px;
+    padding: 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #ff5c77;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .resource-card:hover {
+    background-color: #ff5c77;
+    color: white;
+  }
+
+  .resource-card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+</style>
+
+<div class="plan-wrapper">
+  <div class="plan-title">Project Planning Tools</div>
+
+  <div class="resources-grid">
+    <a href="#" class="resource-card">🧠 Background Research Guide</a>
+    <a href="#" class="resource-card">📝 Project Proposal Template</a>
+    <a href="#" class="resource-card">📊 Data Interpretation Guide</a>
+    <a href="#" class="resource-card">🧪 Project Implementation Form</a>
+  </div>
+</div>
+{% endblock %}

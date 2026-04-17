@@ -1,0 +1,157 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="card shadow-sm p-4" style="max-width: 700px; margin: 0 auto; background-color: #ffe5ec; border-radius: 20px;">
+    <div class="text-center mb-4">
+      <img src="{% static 'images/ysa_logo.png' %}" class="mb-2" style="width: 60px;" alt="YSA Logo">
+      <h2 class="text-danger fw-bold">Food Waste Entry</h2>
+      <p>Help us track food preferences and reduce waste!</p>
+    </div>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <!-- Dish Selection -->
+      <div class="mb-3">
+        <label for="id_dishes">🍽 What did you eat?</label>
+        {{ form.dishes }}
+      </div>
+
+      <!-- Dynamic waste & rating per dish -->
+      <div class="mb-3" id="dish-waste-section" style="display: none;">
+        <label>🧮 Waste & Rating per Dish:</label>
+        <div id="waste-inputs"></div>
+      </div>
+
+      <!-- Waste reason -->
+      <div class="mb-3" id="waste-reason-section" style="display: none;">
+        <label for="id_waste_reason" class="form-label">💭 Why did you waste food?</label><br>
+        {{ form.waste_reason }}
+      </div>
+
+      <!-- Comments -->
+      <div class="mb-3">
+        <label for="id_comments" class="form-label">💬 Any comments?</label><br>
+        {{ form.comments }}
+      </div>
+
+      <!-- Submit -->
+      <div class="text-center">
+        <button class="btn btn-danger rounded-pill px-4" type="submit">Submit</button>
+      </div>
+    </form>
+
+    <div class="text-center mt-4">
+      <a href="{% url 'foodwaste:report' %}" class="btn btn-outline-danger rounded-pill px-4">View Food Waste Report</a>
+    </div>
+  </div>
+</div>
+
+<!-- Style for star rating -->
+<style>
+  .star-rating {
+    direction: rtl;
+    font-size: 1.5rem;
+    unicode-bidi: bidi-override;
+    display: inline-block;
+  }
+
+  .star-rating input[type="radio"] {
+    display: none;
+  }
+
+  .star-rating label {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .star-rating input[type="radio"]:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: gold;
+  }
+</style>
+
+<!-- JavaScript to update rating + waste dynamically -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const dishInputs = document.querySelectorAll('input[name="dishes"]');
+    const wasteSection = document.getElementById('dish-waste-section');
+    const wasteInputsDiv = document.getElementById('waste-inputs');
+
+    const wasteOptions = [0, 25, 50, 75, 100];
+
+    function createStarRating(dishId) {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('star-rating', 'mb-2');
+
+      for (let i = 5; i >= 1; i--) {
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.id = `dish_${dishId}_star${i}`;
+        input.name = `dish_${dishId}_rating`;
+        input.value = i;
+
+        const label = document.createElement('label');
+        label.setAttribute('for', input.id);
+        label.textContent = '★';
+
+        wrapper.appendChild(input);
+        wrapper.appendChild(label);
+      }
+
+      return wrapper;
+    }
+
+    function updateWasteInputs() {
+      wasteInputsDiv.innerHTML = '';
+      let anyChecked = false;
+
+      dishInputs.forEach(dishInput => {
+        if (dishInput.checked) {
+          anyChecked = true;
+          const dishId = dishInput.value;
+          const dishName = dishInput.nextSibling.textContent.trim();
+
+          const container = document.createElement('div');
+          container.classList.add('mb-3', 'p-3', 'border', 'rounded');
+
+          const title = document.createElement('strong');
+          title.innerText = dishName;
+          container.appendChild(title);
+
+          const wasteLabel = document.createElement('label');
+          wasteLabel.innerText = ' Waste %: ';
+          container.appendChild(wasteLabel);
+
+          const select = document.createElement('select');
+          select.name = `waste_percentage_${dishId}`;
+          select.classList.add('form-select', 'mb-2');
+          wasteOptions.forEach(val => {
+            const option = document.createElement('option');
+            option.value = val;
+            option.text = `${val}%`;
+            select.appendChild(option);
+          });
+          container.appendChild(select);
+
+          const ratingLabel = document.createElement('label');
+          ratingLabel.innerText = ' Rating:';
+          container.appendChild(ratingLabel);
+
+          container.appendChild(createStarRating(dishId));
+
+          wasteInputsDiv.appendChild(container);
+        }
+      });
+
+      wasteSection.style.display = anyChecked ? 'block' : 'none';
+    }
+
+    dishInputs.forEach(input => input.addEventListener('change', updateWasteInputs));
+    updateWasteInputs();
+  });
+</script>
+{% endblock %}

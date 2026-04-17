@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2 class="text-center mb-4">Customize Your Avatar</h2>
+
+    <div class="text-center mb-4">
+        {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="Uploaded Avatar" class="avatar shadow mb-3">
+        {% elif profile.generated_avatar %}
+            <img src="{{ profile.generated_avatar.url }}" alt="Generated Avatar" class="avatar shadow mb-3">
+        {% else %}
+            <p class="text-muted">No avatar set. Please upload or design one.</p>
+        {% endif %}
+    </div>
+
+    <!-- Upload Avatar -->
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Upload an Avatar:</label>
+        <input type="file" name="avatar" class="form-control mb-3">
+        <button type="submit" class="btn btn-primary">Upload Avatar</button>
+    </form>
+
+    <hr>
+
+    <h4 class="text-center">Or Customize Your Own Avatar</h4>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="generate_avatar" class="btn btn-secondary btn-lg">Generate Custom Avatar</button>
+    </form>
+</div>
+{% endblock %}

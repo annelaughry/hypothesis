@@ -1,0 +1,168 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+<div class="dashboard-container">
+    <h2 class="text-center mb-4">Edit Profile</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="form-container" id="avatar-form">
+        {% csrf_token %}
+
+        <!-- Profile Fields -->
+        <div class="form-grid">
+            <div class="form-group">{{ form.first_name.label_tag }} {{ form.first_name }}</div>
+            <div class="form-group">{{ form.last_name.label_tag }} {{ form.last_name }}</div>
+            <div class="form-group">{{ form.school.label_tag }} {{ form.school }}</div>
+            <div class="form-group">{{ form.age.label_tag }} {{ form.age }}</div>
+            <div class="form-group">{{ form.teaching_place.label_tag }} {{ form.teaching_place }}</div>
+        </div>
+
+        <!-- Avatar Preview -->
+        <div class="text-center mb-4">
+            <h4>Current Avatar</h4>
+            <div id="avatar-preview">
+                {% if profile.generated_avatar %}
+                    <img src="{{ profile.generated_avatar.url }}" alt="Generated Avatar" class="avatar shadow mb-3">
+                {% elif profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="Uploaded Avatar" class="avatar shadow mb-3">
+                {% else %}
+                    <img src="{% static 'images/logo.png' %}" alt="Default Avatar" class="avatar shadow mb-3">
+                {% endif %}
+            </div>
+        </div>
+
+
+        <!-- A Pip for Your Profile -->
+        <h4>A Pip for Your Profile</h4>
+        <div class="form-group">
+            <label for="id_pip_quote">Write a custom quote to display under your avatar:</label>
+            <input type="text" name="pip_quote" id="id_pip_quote" class="form-control"
+                value="{{ form.pip_quote.value|default_if_none:'' }}" maxlength="150"
+                placeholder="Your personal quote...">
+        </div>
+
+        <!-- Upload Avatar -->
+        <h4>Upload an Avatar</h4>
+        <input type="file" name="avatar" class="form-control mb-3">
+
+        <!-- Avatar Customization Options -->
+        <h4>Or Design Your Own Avatar</h4>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="hair_type">Hair Type:</label>
+                {{ avatar_form.hair_type }}
+            </div>
+            <div class="form-group">
+                <label for="hair_color">Hair Color:</label>
+                {{ avatar_form.hair_color }}
+            </div>
+            <div class="form-group">
+                <label for="skin_color">Skin Color:</label>
+                {{ avatar_form.skin_color }}
+            </div>
+            <div class="form-group">
+                <label for="clothing_type">Clothing:</label>
+                {{ avatar_form.clothing_type }}
+            </div>
+            <div class="form-group">
+                <label for="clothing_color">Clothing Color:</label>
+                {{ avatar_form.clothing_color }}
+            </div>
+            <div class="form-group">
+                <label for="facial_hair">Facial Hair:</label>
+                {{ avatar_form.facial_hair }}
+            </div>
+            <div class="form-group">
+                <label for="eyes">Eyes:</label>
+                {{ avatar_form.eyes }}
+            </div>
+            <div class="form-group">
+                <label for="eyebrows">Eyebrows:</label>
+                {{ avatar_form.eyebrows }}
+            </div>
+            <div class="form-group">
+                <label for="mouth">Mouth:</label>
+                {{ avatar_form.mouth }}
+            </div>
+            <div class="form-group">
+                <label for="accessory">Accessory:</label>
+                {{ avatar_form.accessory }}
+            </div>
+            <div class="form-group">
+                <label for="shirt_text">Shirt Text (Optional):</label>
+                {{ avatar_form.shirt_text }}
+            </div>
+        </div>
+
+        <!-- Save Button Only -->
+        <div class="button-group">
+            <button type="submit" class="btn btn-success btn-lg">Save Changes</button>
+        </div>
+
+        <!-- Choose Team Section -->
+        {% if not user.team and not user.has_team_join_expired %}
+            <p>You haven't joined a team yet. Please choose one before: <strong>{{ user.team_join_deadline }}</strong></p>
+            <a href="{% url 'teams:team_selection' %}" class="btn btn-primary">Choose a Team</a>
+        {% elif user.has_team_join_expired %}
+            <p class="text-danger">Your team selection deadline has passed. Contact an admin.</p>
+        {% endif %}
+
+    </form>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("avatar-form");
+    const previewContainer = document.getElementById("avatar-preview");
+
+    function updateAvatarPreview() {
+        const formData = new FormData();
+
+        // Manually include all current values for avatar inputs
+        const avatarFields = [
+            "hair_type", "hair_color", "skin_color",
+            "clothing_type", "clothing_color",
+            "facial_hair", "eyes", "eyebrows",
+            "mouth", "accessory", "shirt_text"
+        ];
+
+        avatarFields.forEach(fieldName => {
+            const input = form.querySelector(`[name="${fieldName}"]`);
+            if (input) {
+                formData.append(fieldName, input.value);
+            }
+        });
+
+        fetch("{% url 'users:avatar_preview' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Preview failed");
+            return response.text();
+        })
+        .then(svg => {
+            previewContainer.innerHTML = svg;
+        })
+        .catch(error => console.error("Avatar preview error:", error));
+    }
+
+    // Trigger on any relevant change
+    const inputs = form.querySelectorAll(
+        "select[name], input[name='shirt_text']"
+    );
+    inputs.forEach(input => {
+        input.addEventListener("change", updateAvatarPreview);
+    });
+});
+</script>
+
+
+
+{% endblock %}
+
+
+

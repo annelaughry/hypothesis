@@ -1,0 +1,191 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pippet - Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #ffe6f0; /* Soft pink background */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .signup-container {
+            max-width: 500px; /* Balanced width */
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 40px; /* More spacious padding */
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #333333; /* Primary blue for header */
+            color: #ffffff;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px 10px 0 0; /* Rounded corners for header */
+        }
+
+        .form-group {
+            margin-bottom: 20px; /* Uniform spacing between fields */
+        }
+
+        .form-label {
+            color: #555;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            padding: 12px;
+            font-size: 1rem;
+            width: 100%; /* Ensure full width */
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0073e6; /* Primary blue for focus */
+            box-shadow: 0 0 8px rgba(0, 115, 230, 0.4);
+        }
+
+        .btn-primary {
+            background-color: #ff5c77; /* Pink for buttons */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            padding: 12px 20px;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffffff;
+            color: #ff5c77;
+            border: 2px solid #ff5c77; /* Add a pink border on hover */
+            transform: scale(1.05); /* Subtle zoom */
+        }
+
+        .text-muted {
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .text-muted a {
+            color: #0073e6;
+            text-decoration: none;
+        }
+
+        .text-muted a:hover {
+            color: #ff5c77;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleField = document.getElementById('id_role');
+            const levelField = document.getElementById('id_level');
+            const levelContainer = levelField.closest('.form-group');
+
+            function toggleLevelField() {
+                if (roleField.value === 'student') {
+                    levelContainer.style.display = 'block';
+                } else {
+                    levelContainer.style.display = 'none';
+                }
+            }
+
+            roleField.addEventListener('change', toggleLevelField);
+            toggleLevelField(); // Set the initial state
+        });
+    </script>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 signup-container">
+            <div class="card shadow">
+                <div class="card-header">
+                    Sign Up
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="id_username" class="form-label">Username</label>
+                            {{ form.username }}
+                            {% for error in form.username.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% for error in form.email.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_password1" class="form-label">Password</label>
+                            {{ form.password1 }}
+                            {% for error in form.password1.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_password2" class="form-label">Confirm Password</label>
+                            {{ form.password2 }}
+                            {% for error in form.password2.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_role" class="form-label">Role</label>
+                            {{ form.role }}
+                            {% for error in form.role.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group" id="level-group" style="display: none;">
+                            <label for="id_level" class="form-label">Level (for Students)</label>
+                            {{ form.level }}
+                            {% for error in form.level.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </form>
+
+                    <p class="text-muted mt-3">
+                        Already have an account? <a href="{% url 'users:login' %}" class="text-primary">Login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

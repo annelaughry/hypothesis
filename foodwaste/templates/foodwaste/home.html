@@ -1,0 +1,30 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container text-center py-5">
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success mx-auto" style="max-width: 600px; border-radius: 10px;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="quote fs-2 fw-bold text-danger mb-4">A clean plate is a green plate.</div>
+
+  <img src="{% static 'images/face_plate.png' %}" alt="Face Sticker" class="mb-4" style="width: 220px;">
+
+  <div class="d-flex justify-content-center gap-3 mb-5">
+    <a href="{% url 'foodwaste:food_entry' %}" class="btn btn-danger px-4 rounded-pill">Submit Your Food Entry</a>
+    <a href="{% url 'foodwaste:report' %}" class="btn btn-danger px-4 rounded-pill">View Report</a>
+  </div>
+
+  <div class="footer text-center">
+    <img src="{% static 'images/ysa_logo.png' %}" alt="YSA Logo" class="mb-2" style="width: 70px;">
+    <div class="fw-semibold">FOOD WASTE TRACKER</div>
+  </div>
+
+</div>
+{% endblock %}
