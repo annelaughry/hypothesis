@@ -162,12 +162,19 @@ AUTH_USER_MODEL = 'users.CustomUser'
 env = environ.Env()
 environ.Env.read_env()
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = env('SENDGRID_API_KEY')
+SENDGRID_API_KEY = env('SENDGRID_API_KEY', default='')
+SLACK_BOT_TOKEN = env('SLACK_BOT_TOKEN', default='')
+
+if DEBUG or not SENDGRID_API_KEY:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'apikey'
+    EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+
 DEFAULT_FROM_EMAIL = 'tech@ysa.world'
 
 
